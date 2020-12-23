@@ -15,14 +15,6 @@ const superSchema= new mongoose.Schema({
         type:String,
         required: true
     },
-    permissions:[
-        {
-            permission:{
-                type:String,
-                required:true
-            }
-        }
-    ],
     tokens:[{
 
         token:{
@@ -74,5 +66,5 @@ superSchema.methods.toJSON= function(){
     
     return adminObj;
 }
-
-module.export= new mongoose.model('SuperUser', superSchema);
+const SuperUser=new mongoose.model('SuperUser', superSchema);
+module.exports= SuperUser;
