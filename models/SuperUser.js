@@ -54,4 +54,14 @@ superSchema.methods.generateAuthToken=async function(){
     admin.tokens=admin.tokens.concat({token});
     await admin.save();
     return token;
-}
+};
+
+superSchema.pre('save',async function(next){
+    const superUser=this;
+
+    if(superUser.isModified('password')){
+        superUser.password=await bcrypt.hash(superUser.password,8);
+
+        next();
+    }
+});
