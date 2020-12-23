@@ -65,3 +65,14 @@ superSchema.pre('save',async function(next){
         next();
     }
 });
+superSchema.methods.toJSON= function(){
+    const admin =this;
+    const adminObj= admin.toObject();
+    
+    delete adminObj.password;
+    delete adminObj.tokens;
+    
+    return adminObj;
+}
+
+module.export= new mongoose.model('SuperUser', superSchema);
