@@ -18,15 +18,7 @@ const questionAdminSchema= new mongoose.Schema({
                 throw new Error("رمز عبور ضعیف می باشد")
             }
         }
-    },
-    permissions:[
-        {
-            permission:{
-                type:String,
-                required:true
-            }
-        }
-    ]
+    }
 });
 
 // TODO toJSON
