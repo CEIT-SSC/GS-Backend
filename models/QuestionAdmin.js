@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt =require("jsonwebtoken");
+const config = require ("../utils/config");
 const { default: validator } = require("validator");
 
 
@@ -21,7 +22,17 @@ const questionAdminSchema= new mongoose.Schema({
     }
 });
 
-// TODO toJSON
+questionAdminSchema.methods.generateAuthToken=async function(){
+    const admin=this;
+    const token =jwt.sign({_id:admin._id.toString()}, config.JWT_SECRET);
+
+    admin.tokens= admin.tokens.concat({token});
+    await admin.save();
+
+    return token;
+}
+
+
 questionAdminSchema.statics.findByCredentials = async function(username, password){
     const qAdmin= await questionAdminSchema.findOne({username});
     
@@ -33,11 +44,10 @@ questionAdminSchema.statics.findByCredentials = async function(username, passwor
     if(!isPassMatch){
         throw new Error("Entered password wasn't correct");
     }
-
     return qAdmin;
 }
 
-// TODO pre-save hash
+
 questionAdminSchema.pre('save',async function(next){
     const questionAdmin=this;
     if(questionAdmin.isModified('password')){
