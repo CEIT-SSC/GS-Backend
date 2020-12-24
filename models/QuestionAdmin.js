@@ -15,7 +15,7 @@ const questionAdminSchema= new mongoose.Schema({
         type: String,
         required:true,
         validate(value){
-            if(validator.isNumeric(value)||validator.isAlpha){
+            if(validator.isNumeric(value)||validator.isAlpha(value)){
                 throw new Error("رمز عبور ضعیف می باشد")
             }
         }
@@ -23,8 +23,10 @@ const questionAdminSchema= new mongoose.Schema({
     questions:[
         {
             question:{
-                type:mongoose.Types.ObjectId(),
-                ref:'Question'
+                type:mongoose.Types.ObjectId,
+                ref:'Question',
+                required:true
+
             }
         }
     ],

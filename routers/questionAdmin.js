@@ -9,10 +9,10 @@ router.post('/',authenticateSuperUser,async (req,res)=>{
         if(!req.body.username ||!req.body.password){
             throw new Error("Enter username and password");
         }
-        const newAdmin= new QuestionAdmin(req.body.username,req.body.password);
-        
+        const newAdmin= new QuestionAdmin({
+            username:req.body.username,
+            password:req.body.password});
         const token= await newAdmin.generateAuthToken();
-
         //sending welcome email or sth;
 
         res.status(201).send({
