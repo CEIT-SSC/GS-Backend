@@ -1,5 +1,7 @@
 const QuestionAdmin = require("../models/QuestionAdmin");
 const SuperUser = require("../models/SuperUser");
+const jwt = require("jsonwebtoken");
+const config = require("../utils/config");
 async function authenticateAdmin( req, res, next){
     try{
         const token=req.header('Authorization').replace('Bearer ','');
