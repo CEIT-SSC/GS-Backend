@@ -9,26 +9,31 @@ async function dropDB(){
         useFindAndModify:false,
         useCreateIndex:true
     });
-    console.log("connection established");
     await connection.dropDatabase();
+    console.log("db droped");
+    createSuperUser();
 }
-
-
-function createSuperUser(){
+async function createSuperUser(){
+    mongoose.connect(config.MONGODB_URL,{
+                useNewUrlParser:true,
+                useUnifiedTopology:true,
+                useFindAndModify:false,
+                useCreateIndex:true
+            });
     const username=process.argv[2];
     const password=process.argv[3];
     const newSuper= new SuperUser({
         username:username,
         password:password,
     });
-    newSuper.save().then(result=>{
+    await newSuper.save().then(result=>{
         console.log("superuser created");
-        mongoose.connection.close();
+        mongoose.disconnect();
     }).catch(error=> console.log(error));
 }
 
 dropDB();
-createSuperUser();
+
 
 
 
