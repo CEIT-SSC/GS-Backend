@@ -12,7 +12,6 @@ router.post('/',authenticateSuperUser,async (req,res)=>{
         const newAdmin= new QuestionAdmin({
             username:req.body.username,
             password:req.body.password});
-        const token= await newAdmin.generateAuthToken();
         //sending welcome email or sth;
 
         res.status(201).send({
@@ -37,7 +36,7 @@ router.get("/",authenticateSuperUser,async (req,res)=>{
     }
 })
 //getting specific admin 
-router.get("/:username",authenticateAdmin,async (req,res)=>{
+router.get("/:username",authenticateSuperUser,async (req,res)=>{
     try{
         const questionAdmin = await QuestionAdmin.find({
             username:req.params.username});
