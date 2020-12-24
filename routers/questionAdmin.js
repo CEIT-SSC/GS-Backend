@@ -40,7 +40,8 @@ router.get("/",authenticateAdmin,async (req,res)=>{
 //getting specific admin 
 router.get("/:username",authenticateAdmin,async (req,res)=>{
     try{
-        const questionAdmin = await QuestionAdmin.find(req.params.username);
+        const questionAdmin = await QuestionAdmin.find({
+            username:req.params.username});
         if(!questionAdmin) throw new Error("Couldn't find admin");
 
         //send questions made by admin
