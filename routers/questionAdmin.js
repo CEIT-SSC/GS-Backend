@@ -70,9 +70,34 @@ router.delete("/:username",authenticateSuperUser,async (req,res)=>{
 })
 
 
-//admin log in ;
+//admin log in ; //TODO : TEST WITH POSTMAN
+router.post('/login',async (req,res)=>{
+    try{
+        const questionAdmin = await QuestionAdmin.findByCredentials(req.body.username,req.body.password);
+        const token = questionAdmin.generateAuthToken();
 
-//admin log out;
- // me path
+        res.send({questionAdmin,token});
+    }catch(err){
+        res.status(400).send({
+                error:err.message
+            }
+        )
+    }
+})
+//admin log out; //TODO: TEST WITH POSTMAN
+router.post('/me/logout', authenticateAdmin, async(req , res)=>{
+    try{
+        req.admin.tokens=req.admin.tokens.filter((token)=>token.token!==req.token);
+        await req.admin.save();
+        res.send({
+            message:"logged out successfully"
+        })
+    }catch(err){
+        res.status(500).send({
+            error:err.message
+        })
+    }
+})
+// me path
 
 module.exports=router;
