@@ -1,7 +1,8 @@
-const router = require ("express").Router()
+const router = require ("express").Router();
 const QuestionAdmin =require("../models/QuestionAdmin");
 const authenticateSuperUser =require("../middlewares/superUserAuth");
 const authenticateAdmin = require("../middlewares/questionAdminAuth");
+const logger = require("../utils/logger");
 
 router.post('/',authenticateSuperUser,async (req,res)=>{
     try{
@@ -37,10 +38,14 @@ router.get("/",authenticateAdmin,async (req,res)=>{
     }
 })
 //getting specific admin 
-router.get("/:id",authenticateAdmin,async (req,res)=>{
+router.get("/:username",authenticateAdmin,async (req,res)=>{
     try{
-        const questionAdmin = await QuestionAdmin.find(req.params.id);
+        const questionAdmin = await QuestionAdmin.find(req.params.username);
         if(!questionAdmin) throw new Error("Couldn't find admin");
+
+        //send questions made by admin
+
+
         res.send({questionAdmin});
         }catch(err){
         res.status(500).send({
@@ -48,9 +53,22 @@ router.get("/:id",authenticateAdmin,async (req,res)=>{
         })
     }
 })
-//deleting admins;
 
-//updating admin;
+//deleting admins; //TODO: test with postman
+router.delete("/:username",authenticateSuperUser,async (req,res)=>{
+    try{
+        await QuestionAdmin
+            .findOneAndRemove({username})
+                .then(response=>{
+                    logger.info(response)
+                });
+    }catch(err){
+        res.status(500).send({
+            error:err.message
+        })
+    }
+})
+
 
 //admin log in ;
 
