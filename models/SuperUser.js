@@ -41,7 +41,9 @@ superSchema.statics.findByCredentials= async(username,password)=>{
 
 superSchema.methods.generateAuthToken=async function(){
     const admin =this;
-    const token = jwt.sign({_id:admin._id.toString() },config.JWT_SECRET);
+    const token = jwt.sign({_id:admin._id.toString() },config.JWT_SECRET,{
+        expiresIn:'7 days'
+    });
 
     admin.tokens=admin.tokens.concat({token});
     await admin.save();

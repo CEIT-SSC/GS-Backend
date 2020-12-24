@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended:false}));
 
 //route handlers
-app.use(`${baseURL}/superarea`,require("./routers/superuser"));
+app.use(`/superarea`,require("./routers/superuser"));
 
 
 
