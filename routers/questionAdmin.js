@@ -26,7 +26,7 @@ router.post('/',authenticateSuperUser,async (req,res)=>{
 
 
 //getting all admins
-router.get("/",authenticateAdmin,async (req,res)=>{
+router.get("/",authenticateSuperUser,async (req,res)=>{
     try{
         const questionAdmins = await QuestionAdmin.find();
         res.send(questionAdmins);
