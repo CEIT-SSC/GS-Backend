@@ -1,7 +1,5 @@
 const router = require("express").Router();
 const SuperUser= require("../models/SuperUser");
-const User = require("../models/User");
-const QuestionAdmin =  require("../models/QuestionAdmin");
 const authenticateSuperUser= require("../middlewares/superUserAuth");
 
 
@@ -23,7 +21,9 @@ router.post("/logout",authenticateSuperUser,async (req,res)=>{
     try{
         req.admin.tokens= req.admin.tokens.filter((token)=>token.token!==req.token);
         await req.admin.save();
-        res.send(); 
+        res.send({
+            message:"successfully logged out"
+        }); 
     }catch(error){
         res.status(500).send();
     }
