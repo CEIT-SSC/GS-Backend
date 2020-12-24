@@ -38,4 +38,11 @@ questionAdminSchema.statics.findByCredentials = async function(username, passwor
 }
 
 // TODO pre-save hash
+questionAdminSchema.pre('save',async function(next){
+    const questionAdmin=this;
+    if(questionAdmin.isModified('password')){
+        questionAdmin.password=await bcrypt.hash(questionAdmin.password,8);
+        next();
+    }
+})
 module.exports=new mongoose.model("QuestionAdmin", questionAdminSchema);
