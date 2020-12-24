@@ -19,7 +19,21 @@ const questionAdminSchema= new mongoose.Schema({
                 throw new Error("رمز عبور ضعیف می باشد")
             }
         }
-    }
+    },
+    questions:[
+        {
+            question:{
+                type:mongoose.Types.ObjectId(),
+                ref:'Question'
+            }
+        }
+    ],
+    tokens:[{
+        token:{
+            type:String,
+            required:true
+        }
+    }]
 });
 
 questionAdminSchema.methods.generateAuthToken=async function(){
