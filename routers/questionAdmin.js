@@ -84,7 +84,7 @@ router.post('/login',async (req,res)=>{
         )
     }
 })
-//admin log out; //TODO: TEST WITH POSTMAN
+//admin log out; 
 router.post('/me/logout', authenticateAdmin, async(req , res)=>{
     try{
         req.admin.tokens=req.admin.tokens.filter((token)=>token.token!==req.token);
