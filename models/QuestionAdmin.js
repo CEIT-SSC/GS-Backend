@@ -22,6 +22,20 @@ const questionAdminSchema= new mongoose.Schema({
 });
 
 // TODO toJSON
+questionAdminSchema.statics.findByCredentials = async function(username, password){
+    const qAdmin= await questionAdminSchema.findOne({username});
+    
+    if(!qAdmin){
+        throw new Error("admin couldn't be found");
+    }
+    const isPassMatch = bcrypt.compare(password,qAdmin.password);
+    
+    if(!isPassMatch){
+        throw new Error("Entered password wasn't correct");
+    }
+
+    return qAdmin;
+}
 
 // TODO pre-save hash
 module.exports=new mongoose.model("QuestionAdmin", questionAdminSchema);
