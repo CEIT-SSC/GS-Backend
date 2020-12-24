@@ -49,9 +49,11 @@ questionAdminSchema.methods.generateAuthToken=async function(){
 }
 
 
-questionAdminSchema.statics.findByCredentials = async function(username, password){
-    const qAdmin= await questionAdminSchema.findOne({username});
-    
+questionAdminSchema.statics.findByCredentials = async (username, password)=>{
+    console.log("Tss")
+
+    const qAdmin= await QuestionAdmin.findOne({username});
+    console.log("Tss")
     if(!qAdmin){
         throw new Error("admin couldn't be found");
     }
@@ -71,4 +73,5 @@ questionAdminSchema.pre('save',async function(next){
         next();
     }
 })
-module.exports=new mongoose.model("QuestionAdmin", questionAdminSchema);
+const QuestionAdmin=new mongoose.model("QuestionAdmin", questionAdminSchema);
+module.exports=QuestionAdmin;

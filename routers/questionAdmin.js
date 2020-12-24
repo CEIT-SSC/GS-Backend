@@ -26,7 +26,6 @@ router.post('/',authenticateSuperUser,async (req,res)=>{
 
 
 //getting all admins
-//TODO: check with postman
 router.get("/",authenticateAdmin,async (req,res)=>{
     try{
         const questionAdmins = await QuestionAdmin.find();
@@ -55,7 +54,7 @@ router.get("/:username",authenticateAdmin,async (req,res)=>{
     }
 })
 
-//deleting admins; //TODO: test with postman
+//deleting admins; 
 router.delete("/:username",authenticateSuperUser,async (req,res)=>{
     try{
         await QuestionAdmin
@@ -71,7 +70,7 @@ router.delete("/:username",authenticateSuperUser,async (req,res)=>{
 })
 
 
-//admin log in ; //TODO : TEST WITH POSTMAN
+//admin log in ; 
 router.post('/login',async (req,res)=>{
     try{
         const questionAdmin = await QuestionAdmin.findByCredentials(req.body.username,req.body.password);
