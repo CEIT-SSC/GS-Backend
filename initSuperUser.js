@@ -9,9 +9,10 @@ async function dropDB(){
         useFindAndModify:false,
         useCreateIndex:true
     });
-    await connection.dropDatabase();
-    console.log("db droped");
-    createSuperUser();
+    await connection.dropDatabase().then(()=>{
+        console.log("db droped");
+        createSuperUser();
+    })
 }
 async function createSuperUser(){
     mongoose.connect(config.MONGODB_URL,{
