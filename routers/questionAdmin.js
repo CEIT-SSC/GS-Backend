@@ -60,9 +60,15 @@ router.get("/:username",authenticateSuperUser,async (req,res)=>{
 router.delete("/:username",authenticateSuperUser,async (req,res)=>{
     try{
         await QuestionAdmin
-            .findOneAndRemove({username})
-                .then(response=>{
-                    logger.info(response)
+            .findOneAndRemove({
+                username:req.params.username
+            })
+                .then(questionAdmin=>{
+                    logger.info("response")
+                    res.send({
+                        questionAdmin,
+                        message:"successfully removed"
+                    })
                 });
     }catch(err){
         res.status(500).send({
