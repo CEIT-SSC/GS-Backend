@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended:false}));
 //route handlers
 app.use(`/superarea`,require("./routers/superuser"));
 app.use('/questionadmin',require("./routers/questionAdmin"));
-
+app.use('/user',require("./routers/user"));
 
 app.use(unknownEndpointHandler);
 app.use(errorHandler);
