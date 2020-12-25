@@ -65,7 +65,15 @@ const userSchema= new mongoose.Schema({
 //TODO : add toJSON method
 
 //TODO : add jwt authentication
+userSchema.methods.generateAuthToken=async function(){
+    const user=this;
+    const token =jwt.sign({_id:admin._id.toString()}, config.JWT_SECRET);
 
+    user.tokens= user.tokens.concat({token});
+    await user.save();
+
+    return token;
+}
 
 userSchema.pre('save',async function(next){
     const user=this;
@@ -75,7 +83,7 @@ userSchema.pre('save',async function(next){
     }
     next();
 });
-
-module.exports = new mongoose.model("User", userSchema);
+const User= new mongoose.model("User", userSchema);
+module.exports = User;
 
 
