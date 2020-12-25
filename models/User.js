@@ -59,11 +59,24 @@ const userSchema= new mongoose.Schema({
                 require:true
             }
         }
-    ]
+    ],
+    tokens:[{
+        token:{
+            type:String,
+            required:true
+        }
+    }]
 });
 
 //TODO : add toJSON method
+userSchema.methods.toJSON=function(){
+    const user= this;
+    const userObj=user.toObject();
+    delete userObj.tokens;
+    delete userObj.password;
 
+    return userObj;
+}
 //TODO : add jwt authentication
 userSchema.methods.generateAuthToken=async function(){
     const user=this;
