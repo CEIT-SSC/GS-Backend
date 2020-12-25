@@ -28,13 +28,13 @@ superSchema.statics.findByCredentials= async(username,password)=>{
     const admin= await SuperUser.findOne({username});
     
     if(!admin){
-        throw new Error("User couldn't be found\n Unable to login");
+        throw new Error("Unable to login");
     
     }
     
     const isPassMatch = await bcrypt.compare(password, admin.password);
     if(!isPassMatch) {
-        throw new Error("password didn't match \n Unable to login")
+        throw new Error("Unable to login")
     };
     return admin
 }
