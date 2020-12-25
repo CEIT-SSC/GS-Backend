@@ -6,25 +6,25 @@ const jwt = require("jsonwebtoken");
 const userSchema= new mongoose.Schema({
     studentNumber:{
         type:String,
-        minlength:7,
-        maxlength:8,
         unique:true,
         sparse:true,
         required:true,
         validate(value){
-            if(!validator.isNumeric(value)){
-                throw new Error ("شماره دانشجویی نامعتبر است")
+            if(!validator.isNumeric(value)||(value.length<7 && value.length>8)){
+                throw new Error ("شماره دانشجویی نامعتبر است");
             }
         }
         
     },
     password:{
         type: String,
-        minlength:8,
         required: true,
         validate(value){
-            if(validator.isNumeric(value) || validator.isAlpha){
+            if(validator.isNumeric(value) || validator.isAlpha(value)){
                 throw new Error("رمز عبور ضعیف می باشد")
+            }
+            if(value.length<8){
+                throw new Error("رمز عبور باید بیشتر از ۸ کاراکتر باشد");
             }
         }
     }, 
@@ -78,7 +78,7 @@ userSchema.methods.generateAuthToken=async function(){
 userSchema.pre('save',async function(next){
     const user=this;
 
-    if(!user.isModified("password")){
+    if(user.isModified("password")){
         user.password=await bcrypt.hash(user.password,10);
     }
     next();
