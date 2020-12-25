@@ -3,7 +3,7 @@ const User = require("../models/User");
 const authenticateSuperUser = require("../middlewares/superUserAuth");
 const logger = require("../utils/logger");
 // const errorHandler= require("../middlewares/errorHandler");
-//get user //TODO test with postman
+//get user 
 router.get("/",authenticateSuperUser,async(req,res)=>{
     try{
         const users = await User.find({});
@@ -15,7 +15,7 @@ router.get("/",authenticateSuperUser,async(req,res)=>{
     }
 });
 
-//get user by id //TODO test with postman
+//get user by id 
 router.get("/:studentNumber",authenticateSuperUser,async(req,res)=>{
     try{
         const user = await User.findOne({
@@ -57,7 +57,7 @@ router.post("/",async(req,res)=>{
             message:error.message
         })
     }
-})
+});
 //delete user
 router.delete("/:studentNumber",authenticateSuperUser,async(req,res)=>{
     try{
@@ -77,7 +77,31 @@ router.delete("/:studentNumber",authenticateSuperUser,async(req,res)=>{
     }
 })
 //patch user 
-
+router.patch("/:studentNumber",authenticateSuperUser,async(req,res)=>{
+    try{
+        const user = await User.findOne({
+            studentNumber:req.params.studentNumber
+        })
+        if(!user){
+            res.status(404).send({
+                message:"couldn't find user with entered student number"
+            });
+            return;
+        }
+        Object.keys(req.body).forEach((fieldToUpdate)=>{
+            user[fieldToUpdate] = req.body[fieldToUpdate];
+        })
+        await user.save().then(()=>{
+            logger.info("user updated successfully")
+        })
+        res.send(user);
+    }catch(err){
+        res.status(500).send({
+            message:err.message,
+            result:"unable to patch user"
+        })
+    }
+});
 //login 
 
 //logoutroutes  
