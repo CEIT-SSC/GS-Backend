@@ -1,5 +1,5 @@
 const { baseURL}= require("./utils/config")
-
+const unknownEndpointHandler =require("./middlewares/unknownEndpoint");
 const express= require("express");
 const app=express()
 
@@ -14,6 +14,6 @@ app.use(`/superarea`,require("./routers/superuser"));
 app.use('/questionadmin',require("./routers/questionAdmin"));
 
 
-
+app.use(unknownEndpointHandler);
 
 module.exports = app;
