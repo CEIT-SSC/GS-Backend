@@ -12,7 +12,7 @@ async function dropDB(){
     await connection.dropDatabase().then(()=>{
         console.log("db droped");
         createSuperUser();
-    })
+    });
 }
 async function createSuperUser(){
     mongoose.connect(config.MONGODB_URL,{

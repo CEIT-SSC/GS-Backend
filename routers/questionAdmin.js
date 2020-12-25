@@ -64,7 +64,7 @@ router.delete("/:username",authenticateSuperUser,async (req,res)=>{
                 username:req.params.username
             })
                 .then(questionAdmin=>{
-                    logger.info("response")
+                    logger.info("question admin successfully removed")
                     res.send({
                         questionAdmin,
                         message:"successfully removed"
