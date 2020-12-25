@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt =require("jsonwebtoken");
 const config = require ("../utils/config");
 const { default: validator } = require("validator");
-
+const logger = require ("../utils/logger");
 
 const questionAdminSchema= new mongoose.Schema({
     username:{
@@ -48,12 +48,9 @@ questionAdminSchema.methods.generateAuthToken=async function(){
     return token;
 }
 
-
 questionAdminSchema.statics.findByCredentials = async (username, password)=>{
-    console.log("Tss")
-
     const qAdmin= await QuestionAdmin.findOne({username});
-    console.log("Tss")
+
     if(!qAdmin){
         throw new Error("admin couldn't be found");
     }
