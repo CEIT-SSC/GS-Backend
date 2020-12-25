@@ -3,7 +3,13 @@ const User = require("../models/User");
 const authenticateSuperUser = require("../middlewares/superUserAuth");
 const logger = require("../utils/logger");
 // const errorHandler= require("../middlewares/errorHandler");
-//get user 
+//get user
+
+/**
+ * get all users in the database
+ * only can be accessible by superuser
+ * @return {JSON} the json object representing list of users
+ */
 router.get("/",authenticateSuperUser,async(req,res)=>{
     try{
         const users = await User.find({});
@@ -15,7 +21,11 @@ router.get("/",authenticateSuperUser,async(req,res)=>{
     }
 });
 
-//get user by id 
+/**
+ * get specified user and can be done only by superuser
+ * @param {Number} studentNumber student number of user
+ * @return {JSON}  the json object if user exist
+ */
 router.get("/:studentNumber",authenticateSuperUser,async(req,res)=>{
     try{
         const user = await User.findOne({
@@ -32,6 +42,12 @@ router.get("/:studentNumber",authenticateSuperUser,async(req,res)=>{
 
 //create user
 //TODO handle some how so that only admin and mr hashemi could create user
+/**
+ * creates new user and can be done by super user and mr hashemi
+ * @param {String} studentNumber the student number of new user
+ * @param {String} password the password of new user
+ * @return {JSON} the obj of created user
+ */
 router.post("/",async(req,res)=>{
     try{
         if(!req.body.studentNumber ||!req.body.password){
@@ -59,6 +75,11 @@ router.post("/",async(req,res)=>{
     }
 });
 //delete user
+/**
+ * deletes user with specified student number
+ * @param {Number} studentNumber the student number is specified in path
+ * @return {JSON} removed user
+ */
 router.delete("/:studentNumber",authenticateSuperUser,async(req,res)=>{
     try{
         await User.findOneAndRemove({
@@ -76,7 +97,11 @@ router.delete("/:studentNumber",authenticateSuperUser,async(req,res)=>{
         });
     }
 })
-//patch user 
+
+/**
+ * patch and update user with specified student number mentioned in path
+ * parameters can very depends on the thing needed to be updated
+ */
 router.patch("/:studentNumber",authenticateSuperUser,async(req,res)=>{
     try{
         const user = await User.findOne({
