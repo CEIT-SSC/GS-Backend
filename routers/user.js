@@ -59,8 +59,26 @@ router.post("/",async(req,res)=>{
     }
 })
 //delete user
-
+router.delete("/:studentNumber",authenticateSuperUser,async(req,res)=>{
+    try{
+        await User.findOneAndRemove({
+            studentNumber:req.params.studentNumber
+        }).then(removedUser=>{
+            logger.info("user successfully removed");
+            res.send({
+                message:"user successfully removed",
+                removedUser
+            });
+        });
+    }catch(err){
+        res.status(500).send({
+            message:err.message
+        });
+    }
+})
 //patch user 
 
+//login 
 
+//logoutroutes  
 module.exports=router;
