@@ -9,15 +9,17 @@ router.post('/',authenticateSuperUser,async (req,res)=>{
         if(!req.body.username ||!req.body.password){
             throw new Error("Enter username and password");
         }
-        const newAdmin= new QuestionAdmin({
+        const questionAdmin= new QuestionAdmin({
             username:req.body.username,
             password:req.body.password});
         //sending welcome email or sth;
 
-        res.status(201).send({
-            newAdmin,
-            token
+        await questionAdmin.save().then(()=>{
+            logger.info("new question admin created")
+        }).catch(err=>{
+            throw new Error("a question admin with this username already exists.");
         })
+        res.status(201).send(questionAdmin);
     }catch(err){
         res.status(400).send({error:err.message});
     }
@@ -34,7 +36,8 @@ router.get("/",authenticateSuperUser,async (req,res)=>{
             error:err.message
         })
     }
-})
+});
+
 //getting specific admin 
 router.get("/:username",authenticateSuperUser,async (req,res)=>{
     try{
@@ -51,7 +54,7 @@ router.get("/:username",authenticateSuperUser,async (req,res)=>{
             error:err.message
         })
     }
-})
+});
 
 //deleting admins; 
 router.delete("/:username",authenticateSuperUser,async (req,res)=>{
@@ -66,8 +69,35 @@ router.delete("/:username",authenticateSuperUser,async (req,res)=>{
             error:err.message
         })
     }
-})
+});
 
+router.patch("/:username", authenticateSuperUser,async(req,res)=>{
+    try{
+        const questionAdmin= await QuestionAdmin.findOne({
+            username:req.params.username
+        });
+        if(!questionAdmin){
+            res.status(404).send({
+                message:"couldn't find admin with entered username"
+            });
+            return;
+        }
+
+        Object.keys(req.body).forEach((fieldToUpdate)=>{
+            questionAdmin[fieldToUpdate] = req.body[fieldToUpdate];
+        })
+        await questionAdmin.save().then(()=>{
+            logger.info("updated successfully")
+        })
+
+        res.send(questionAdmin);
+
+    }catch(err){
+        res.status(500).send({
+            error:err.message
+        })
+    }
+})
 
 //admin log in ; 
 router.post('/login',async (req,res)=>{
@@ -82,7 +112,7 @@ router.post('/login',async (req,res)=>{
             }
         )
     }
-})
+});
 //admin log out; 
 router.post('/me/logout', authenticateAdmin, async(req , res)=>{
     try{
