@@ -13,7 +13,7 @@ router.post('/',authenticateSuperUser,async (req,res)=>{
             username:req.body.username,
             password:req.body.password});
         //sending welcome email or sth;
-
+            // u can generate auth and redirect to me url
         await questionAdmin.save().then(()=>{
             logger.info("new question admin created")
         }).catch(err=>{
@@ -48,7 +48,7 @@ router.get("/:username",authenticateSuperUser,async (req,res)=>{
         //send questions made by admin
 
 
-        res.send({questionAdmin});
+        res.send(questionAdmin);
         }catch(err){
         res.status(500).send({
             error:err.message
