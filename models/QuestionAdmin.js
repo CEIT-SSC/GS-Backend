@@ -62,6 +62,15 @@ questionAdminSchema.statics.findByCredentials = async (username, password)=>{
     return qAdmin;
 }
 
+questionAdminSchema.methods.toJSON=function(){
+    const admin = this;
+    const adminObj=admin.toObject();
+
+    delete adminObj.tokens;
+    delete adminObj.password;
+
+    return adminObj;
+}
 
 questionAdminSchema.pre('save',async function(next){
     const questionAdmin=this;
