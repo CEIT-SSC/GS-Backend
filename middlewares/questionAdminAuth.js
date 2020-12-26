@@ -2,21 +2,32 @@ const QuestionAdmin = require("../models/QuestionAdmin");
 const SuperUser = require("../models/SuperUser");
 const jwt = require("jsonwebtoken");
 const config = require("../utils/config");
-async function authenticateAdmin( req, res, next){
-    try{
-        const token=req.header('Authorization').replace('Bearer ','');
-        const decoded = jwt.verify(token,config.JWT_SECRET);
-        const superUser= await SuperUser.findOne({_id:decoded._id, 'tokens.token':token});
-        const questionAdmin = await QuestionAdmin.findOne({ _id: decoded._id, 'tokens.token': token });
+const {authCheckSuperUser} = require ("../middlewares/superUserAuth");
 
-        if(!superUser && !questionAdmin )throw new Error("You don't have the premission");
-        req.token=token;
-        req.admin=superUser?superUser:questionAdmin;
-        next()
-    }catch(err){
+async function authenticateAdmin( req, res, next){
+    if(await authCheckSuperUser(req) || await authCheckQuestionAdmin (req)){
+        next();
+    }else{
         res.status(401).send({
-            error:err.message
+            error:"You don't have the premission"
         })
     }
 };
-module.exports = authenticateAdmin;
+async function authCheckQuestionAdmin(req){
+    try{
+        const token=req.header('Authorization').replace('Bearer ','');
+        const decoded = jwt.verify(token,config.JWT_SECRET);
+        const questionAdmin = await QuestionAdmin.findOne({ _id: decoded._id, 'tokens.token': token });
+
+        if(!questionAdmin )return false;;
+        req.token=token;
+        req.admin=questionAdmin;
+        return true;
+    }catch(err){
+        return false;
+    }
+}
+module.exports = {
+    authenticateAdmin,
+    authCheckQuestionAdmin
+};
