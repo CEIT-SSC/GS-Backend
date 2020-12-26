@@ -21,8 +21,11 @@ async function authenticateSuperUser(req,res,next){
         next();
     }else{
         res.status(401).send({
-            error:'Please authenticate as admin'
+            error:'Please authenticate as superuser'
         });
     }
 }
-module.exports=authenticateSuperUser;
+module.exports={
+    authenticateSuperUser,
+    authCheckSuperUser
+};
