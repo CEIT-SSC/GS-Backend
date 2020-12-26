@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/User");
-const authenticateSuperUser = require("../middlewares/superUserAuth");
+const {authenticateSuperUser} = require("../middlewares/superUserAuth");
 const logger = require("../utils/logger");
 
 router.get("/",authenticateSuperUser,async(req,res)=>{

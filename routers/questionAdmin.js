@@ -1,7 +1,8 @@
 const router = require ("express").Router();
 const QuestionAdmin =require("../models/QuestionAdmin");
-const authenticateSuperUser =require("../middlewares/superUserAuth");
-const authenticateAdmin = require("../middlewares/questionAdminAuth");
+const {authenticateSuperUser} =require("../middlewares/superUserAuth");
+const {authenticateAdmin,
+        authJustQuestionAdmin} = require("../middlewares/questionAdminAuth");
 const logger = require("../utils/logger");
 
 router.post('/',authenticateSuperUser,async (req,res)=>{
@@ -76,7 +77,7 @@ router.delete("/:username",authenticateSuperUser,async (req,res)=>{
         })
     }
 });
-
+//TODO a bug in authentication : the question admin it self should be able to update its self
 router.patch("/:username", authenticateSuperUser,async(req,res)=>{
     try{
         const questionAdmin= await QuestionAdmin.findOne({
@@ -105,11 +106,10 @@ router.patch("/:username", authenticateSuperUser,async(req,res)=>{
     }
 })
 
-
 router.post('/login',async (req,res)=>{
     try{
         const questionAdmin = await QuestionAdmin.findByCredentials(req.body.username,req.body.password);
-        const token = questionAdmin.generateAuthToken();
+        const token = await questionAdmin.generateAuthToken();
 
         res.status(200).send({questionAdmin,token});
     }catch(err){
@@ -120,7 +120,7 @@ router.post('/login',async (req,res)=>{
     }
 });
 
-router.post('/me/logout', authenticateAdmin, async(req , res)=>{
+router.post('/me/logout', authJustQuestionAdmin, async(req , res)=>{
     try{
         req.admin.tokens=req.admin.tokens.filter((token)=>token.token!==req.token);
         await req.admin.save();

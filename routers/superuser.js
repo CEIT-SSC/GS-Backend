@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const SuperUser= require("../models/SuperUser");
-const authenticateSuperUser= require("../middlewares/superUserAuth");
+const {authenticateSuperUser}= require("../middlewares/superUserAuth");
 
 
 

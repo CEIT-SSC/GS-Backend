@@ -52,12 +52,12 @@ questionAdminSchema.statics.findByCredentials = async (username, password)=>{
     const qAdmin= await QuestionAdmin.findOne({username});
 
     if(!qAdmin){
-        throw new Error("admin couldn't be found");
+        throw new Error("failded to identify admin");
     }
-    const isPassMatch = bcrypt.compare(password,qAdmin.password);
-    
+    const isPassMatch = await bcrypt.compare(password,qAdmin.password);
+    // console.log(isPassMatch)
     if(!isPassMatch){
-        throw new Error("Entered password wasn't correct");
+        throw new Error("failded to identify admin");
     }
     return qAdmin;
 }

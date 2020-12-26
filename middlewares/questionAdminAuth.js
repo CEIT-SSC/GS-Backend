@@ -1,5 +1,4 @@
 const QuestionAdmin = require("../models/QuestionAdmin");
-const SuperUser = require("../models/SuperUser");
 const jwt = require("jsonwebtoken");
 const config = require("../utils/config");
 const {authCheckSuperUser} = require ("../middlewares/superUserAuth");
@@ -27,7 +26,17 @@ async function authCheckQuestionAdmin(req){
         return false;
     }
 }
+async function authJustQuestionAdmin( req, res, next){
+    if(!(await authCheckSuperUser (req ))||await authCheckQuestionAdmin(req)){
+        next();
+    }else{
+        res.status(401).send({
+            error:"You don't have the premission"
+        });
+    }
+}
 module.exports = {
     authenticateAdmin,
-    authCheckQuestionAdmin
+    authCheckQuestionAdmin,
+    authJustQuestionAdmin
 };
