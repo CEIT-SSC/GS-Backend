@@ -3,13 +3,7 @@ const QuestionAdmin =require("../models/QuestionAdmin");
 const authenticateSuperUser =require("../middlewares/superUserAuth");
 const authenticateAdmin = require("../middlewares/questionAdminAuth");
 const logger = require("../utils/logger");
-/**
- * creates new questionAdmin and can be done only by superuser
- * takes its parameters in json format
- * @param {String} username the username of question admin
- * @param {String} password the password of question admin
- * notice that weak and too short password can cause error
- */
+
 router.post('/',authenticateSuperUser,async (req,res)=>{
     try{
         if(!req.body.username ||!req.body.password){
@@ -32,11 +26,7 @@ router.post('/',authenticateSuperUser,async (req,res)=>{
 });
 
 
-//getting all admins
-/**
- * gets all the admins and can be done only by super user
- * @return {JSON} json file containing list of admins
- */
+
 router.get("/",authenticateSuperUser,async (req,res)=>{
     try{
         const questionAdmins = await QuestionAdmin.find();
@@ -48,12 +38,7 @@ router.get("/",authenticateSuperUser,async (req,res)=>{
     }
 });
 
-/**
- * gets specific question admin 
- * can be done only by super user
- * takes its parameter in url as username parameter
- * @return {JSON} returns question admin in json
- */
+
 router.get("/:username",authenticateSuperUser,async (req,res)=>{
     try{
         const questionAdmin = await QuestionAdmin.find({
@@ -71,12 +56,8 @@ router.get("/:username",authenticateSuperUser,async (req,res)=>{
     }
 });
 
-/**
- * deletes specified question admin 
- * can be done only by super user
- * takes its parameter in url named username
- * @return {JSON} json presentation of deleted admin
- */
+
+
 router.delete("/:username",authenticateSuperUser,async (req,res)=>{
     try{
         await QuestionAdmin
@@ -85,9 +66,8 @@ router.delete("/:username",authenticateSuperUser,async (req,res)=>{
             })
                 .then(questionAdmin=>{
                     logger.info("question admin successfully removed")
-                    res.send({
+                    res.status(200).send({
                         questionAdmin,
-                        message:"successfully removed"
                     })
                 });
     }catch(err){
@@ -96,14 +76,7 @@ router.delete("/:username",authenticateSuperUser,async (req,res)=>{
         })
     }
 });
-/**
- * patch and updates specified question admin
- * can be done only by super user
- * takes username parameter in url to find the question admin 
- * and takes other paramters which should be updated in json body which 
- * can be username and password
- * @return {JSON} the updated question admin
- */
+
 router.patch("/:username", authenticateSuperUser,async(req,res)=>{
     try{
         const questionAdmin= await QuestionAdmin.findOne({
@@ -132,19 +105,13 @@ router.patch("/:username", authenticateSuperUser,async(req,res)=>{
     }
 })
 
-/**
- * log in and can be done by anyone
- * @param {String} username 
- * @param {String} password
- * takes parameter using json body
- * @return {JSON} representing question admin and token generated
- */
+
 router.post('/login',async (req,res)=>{
     try{
         const questionAdmin = await QuestionAdmin.findByCredentials(req.body.username,req.body.password);
         const token = questionAdmin.generateAuthToken();
 
-        res.send({questionAdmin,token});
+        res.status(200).send({questionAdmin,token});
     }catch(err){
         res.status(400).send({
                 error:err.message
@@ -152,10 +119,7 @@ router.post('/login',async (req,res)=>{
         )
     }
 });
-/**
- * logs out and can be done only by question admin
- * removes the token and send success message
- */
+
 router.post('/me/logout', authenticateAdmin, async(req , res)=>{
     try{
         req.admin.tokens=req.admin.tokens.filter((token)=>token.token!==req.token);

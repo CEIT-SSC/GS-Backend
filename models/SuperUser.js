@@ -9,7 +9,7 @@ const superSchema= new mongoose.Schema({
         trim: true,
         unique: true,
         toLower:true,
-        minlength: true
+        minlength: 6
     },
     password:{
         type:String,
