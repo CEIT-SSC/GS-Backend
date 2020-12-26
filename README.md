@@ -1,9 +1,8 @@
 ## A GUIDE TO GS-BACKEND DOCS
 
-first of all you install dependencied by using 
+first of all you install dependencies by using 
 ```
 npm install 
-
 ```
 in the main directory 
 
