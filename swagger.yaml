@@ -1,0 +1,592 @@
+swagger: "2.0"
+info:
+  description: "This is the api-doc for general shit site's backend"
+  version: "1.0.0"
+  title: "GS backend"
+servers:
+  - url: "http://localhost:3000/"
+    description: "development server"
+tags:
+- name: "Question Admin"
+  description: ""
+- name: "Super User"
+  description: ""
+- name: "User"
+  description: "Operations about user"
+
+schemes:
+# - "https"
+- "http"
+paths:
+  /superarea/login:
+    post:
+      tags:
+      - "Super User"
+      summary: "login with super user informaton"
+      description: ""
+      operationId: "addSuper"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "super user"
+        required: true
+        schema:
+          $ref: "#/definitions/SuperUser"
+      responses:
+        "200":
+          description: "superuser logged successfully"
+          schema:
+            type: "object"
+            example:
+            - username: "superuser username"
+              password: "hashed password"
+            - token: "generated token"
+        "400":
+          description: "Error while validating"
+
+  /superarea/logout:
+    post:
+      tags:
+      - "Super User"
+      summary: "super user will be logged out"
+      description: "super user should be authenticated to request for logout"
+      operationId: "superLogout"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "authToken"
+        in: "header"
+        description: "needs to be send in bearer thingy"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            example:
+              - message: "successfully logged out"
+              
+        "500":
+          description: "internal server error"
+
+  /questionadmin/:
+    post:
+      tags:
+      - "Question Admin"
+      summary: "creates new question admin"
+
+      operationId: "addQAdmin"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/QuestionAdmin"
+      - name: "superuser Auth"
+        in: "header"
+        required: true
+        type: "string"
+        description: "only superuser can create new admins"
+      responses:
+        "201":
+          description: "successful operation"
+          schema:
+            type: "object"
+            example:
+              username : "newAdminUsername"
+              password: "hashed password"
+        "400":
+          description: "error message will be displayed"
+    get:
+      tags:
+      - "Question Admin"
+      summary: "returns all admins"
+      operationId: "getAdmins"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "superuser auth"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "returns all admins"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/QuestionAdmin"
+
+  /questionadmin/{username}:
+    get:
+      tags:
+      - "Question Admin"
+      summary: "get question admin by username"
+      description: "Returns a specified question admin"
+      operationId: "getadminByUsername"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "username of admin to return"
+        required: true
+        type: "string"
+      - name: "superuser auth"
+        in: "header"
+        required: true
+        type: "string"
+        
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/QuestionAdmin"
+        "500":
+          description: "error message will be returned"
+      # security:
+      # - api_key: []
+    patch:
+      tags:
+      - "Question Admin"
+      summary: "Updates a pet in the store with form data"
+      description: ""
+      operationId: "updatePetWithForm"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "updated info of question admin"
+        required: false
+        schema:
+          type: "object"
+          example:
+            username: "updated username"
+            password: "updated password"
+      - name: "username"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "superuser Auth"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        "500":
+          description: "error message will be returned"
+
+    delete:
+      tags:
+      - "Question Admin"
+      summary: "Deletes a question admin"
+      description: ""
+      operationId: "deleteAdmin"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "superuser auth"
+        in: "header"
+        required: true
+        type: "string"
+
+      responses:
+        "200":
+          description: "successfully removed"
+          schema:
+            $ref: "#/definitions/QuestionAdmin"
+          
+        "500":
+          description: "error message will be returned"
+
+  /questionadmin/login:
+    post:
+      tags:
+      - "Question Admin"
+      summary: "logs question admin in"
+      description: ""
+      operationId: "qadminlogin"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "info of the question admin"
+        required: true
+        schema:
+          type: "object"
+          example:
+            username: "qadmin username"
+            password: "qadmin password"
+      responses:
+        "200":
+          description: "logged in successfully"
+          schema:
+            type: "object"
+            example :
+            - username: "admin username"
+              password: "hashed password"
+            - token: "token"
+        "400":
+          description: "error will be returned"
+  /questionadmin/logout:
+    post:
+      tags:
+      - "Question Admin"
+      summary: "logs out the admin"
+      description: "Returns a map of status codes to quantities"
+      operationId: "adminLogout"
+      produces:
+      - "application/json"
+      parameters: 
+        - name: "admin token"
+          in: "header"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            example:
+              message: "logged out successfully"
+        "500":
+          description: "error will be returned"
+
+
+  /user/:
+    get:
+      tags:
+      - "User"
+      summary: "gets all users"
+      description: "This can only be done by superuser."
+      operationId: "getAllUser"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "token"
+        description: "superuser authentication"
+        type: "string"
+      responses:
+        default:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/User"
+        "500":
+          description: "error will be returned"
+    post:
+      tags:
+      - "User"
+      summary: "Create user"
+      description: "This can only be done by mr hashemi or superuser."
+      operationId: "createUser"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created user object"
+        required: true
+        schema:
+          type: "object"
+          example:
+            studentNumber: "user student number"
+            password: "password"
+      responses:
+        "201":
+          description: "successful operation"
+          schema:
+            type: "object"
+            example:
+            - studentNumber: "user student number"
+              password: "hashed password"
+              question : "[empty list representing current questions]"
+            - token: "user token"
+        "500":
+          description: "error will be returned"
+  /user/{studentNumber}:
+    get:
+      tags:
+      - "User"
+      summary: "get the specified user"
+      description: "this can only be done by superuser (and in future) the user itself"
+      operationId: "getUserById"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "studentNumber"
+        description: "id of the user"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "returns specified user"
+          schema:
+            type: "object"
+            example:
+              studentNumber: "user student number"
+              password: "hashed password"
+              question : "[list representing current questions]"
+        "500":
+          description: "error will be returned"
+    patch:
+      tags:
+      - "User"
+      summary: "update user"
+      description: "this can only be done by superuser (and in future) the user itself."
+      operationId: "updateUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "studentNumber"
+        in: "path"
+        description: "id of user which needs to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          type: "object"
+          example:
+            studentNumber: "updated student number"
+            password: "updated password"
+      - in: "header"
+        name: "token"
+        description: "superuser auth"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "updated user"
+          schema:
+            type: "object"
+            example:
+              studentNumber: "user student number"
+              password: "hashed password"
+              question : "[list representing current questions]"
+        "500":
+          description: "error will be displayed "
+    delete:
+      tags:
+      - "User"
+      summary: "Delete user"
+      description: "This can only be done by the logged in user or super admin."
+      operationId: "deleteUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "studentNumber"
+        in: "path"
+        description: "The name that needs to be deleted"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        default:
+          description: "successfully removed and returns removed user"
+          schema:
+            type: "object"
+            example:
+              studentNumber: "user student number"
+              password: "hashed password"
+              question : "[list representing current questions]"
+        "500":
+          description: "error will be returned"
+  # /user/login:
+  #   get:
+  #     tags:
+  #     - "user"
+  #     summary: "Logs user into the system"
+  #     description: ""
+  #     operationId: "loginUser"
+  #     produces:
+  #     - "application/xml"
+  #     - "application/json"
+  #     parameters:
+  #     - name: "username"
+  #       in: "query"
+  #       description: "The user name for login"
+  #       required: true
+  #       type: "string"
+  #     - name: "password"
+  #       in: "query"
+  #       description: "The password for login in clear text"
+  #       required: true
+  #       type: "string"
+  #     responses:
+  #       "200":
+  #         description: "successful operation"
+  #         schema:
+  #           type: "string"
+  #         headers:
+  #           X-Rate-Limit:
+  #             type: "integer"
+  #             format: "int32"
+  #             description: "calls per hour allowed by the user"
+  #           X-Expires-After:
+  #             type: "string"
+  #             format: "date-time"
+  #             description: "date in UTC when token expires"
+  #       "400":
+  #         description: "Invalid username/password supplied"
+  # /user/logout:
+  #   get:
+  #     tags:
+  #     - "user"
+  #     summary: "Logs out current logged in user session"
+  #     description: ""
+  #     operationId: "logoutUser"
+  #     produces:
+  #     - "application/xml"
+  #     - "application/json"
+  #     parameters: []
+  #     responses:
+  #       default:
+  #         description: "successful operation"
+
+# securityDefinitions:
+#   petstore_auth:
+#     type: "oauth2"
+#     authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+#     flow: "implicit"
+#     scopes:
+#       write:pets: "modify pets in your account"
+#       read:pets: "read your pets"
+#   api_key:
+#     type: "apiKey"
+#     name: "api_key"
+#     in: "header"
+definitions:
+  SuperUser:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      password:
+        type: "string"
+      tokens:
+        type: "string"
+    required:
+      - username
+      - password 
+    example:
+       username: superuser
+       password: superuserPass
+    xml:
+      name: "superuser"
+  QuestionAdmin:
+    type: "object"
+    properties:
+      username:
+        type: "integer"
+      password :
+        type: "string"
+      questions: 
+        type: "array"
+        items:
+          $ref: "#/definitions/Question"
+    required:
+      - username 
+      - password 
+    example:
+        username: "questionAdminUsername"
+        password: "qAdminPass"
+        questions: "[list of questions]"
+  User:
+    type: "object"
+    properties:
+      studentNumber:
+        type: "integer"
+      password:
+        type: "string"
+        example:
+      testCases:
+        type: "string"
+        description: "arrays of testcases"
+    
+  # Pet:
+  #   type: "object"
+  #   required:
+    # - "name"
+    # - "photoUrls"
+    # properties:
+    #   id:
+    #     type: "integer"
+    #     format: "int64"
+    #   category:
+    #     $ref: "#/definitions/Category"
+    #   name:
+    #     type: "string"
+    #     example: "doggie"
+    #   photoUrls:
+    #     type: "array"
+    #     xml:
+    #       name: "photoUrl"
+    #       wrapped: true
+    #     items:
+    #       type: "string"
+    #   tags:
+    #     type: "array"
+    #     xml:
+    #       name: "tag"
+    #       wrapped: true
+    #     items:
+    #       $ref: "#/definitions/Tag"
+    #   status:
+    #     type: "string"
+    #     description: "pet status in the store"
+    #     enum:
+    #     - "available"
+    #     - "pending"
+    #     - "sold"
+    # xml:
+    #   name: "Pet"
+  Question:
+    type: "object"
+    properties:
+      forDate:
+        type: "string"
+      name:
+        type: "string"
+      body:
+        type: "string"
+      examples:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            input:
+              type: "string"
+            output:
+              type: "string"
+      testGeneratorPath:
+        type: "string"
+      answerPath:
+        type: "string"
+
