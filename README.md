@@ -1,0 +1,15 @@
+## A GUIDE TO GS-BACKEND DOCS
+
+first of all you install dependencied by using 
+```
+npm install 
+
+```
+in the main directory 
+
+then start the server by using
+```
+npm start
+```
+to access to api-docs you should go to 
+`localhost:3000/api-docs` 
