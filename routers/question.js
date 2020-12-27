@@ -5,12 +5,13 @@ const {
     uploadTestCase,
     generateId,
     generateDir } = require ("../middlewares/upload")
-const uploadFields=[
-    {name:'answercase'},
+const fieldstoUpload=[
+    {name:'answer'},
     {name:'testGenerator'}
 ]
+const logger = require("../utils/logger");
 //create question
-router.post("/", authenticateAdmin , generateId ,generateDir ,uploadTestCase.fields(uploadFields) , async (req,res)=>{
+router.post("/", authenticateAdmin , generateId ,generateDir ,uploadTestCase.fields(fieldstoUpload) , async (req,res)=>{
     try{
         console.log(req.files)
         if(!req.body.name || !req.body.body){
@@ -22,8 +23,8 @@ router.post("/", authenticateAdmin , generateId ,generateDir ,uploadTestCase.fie
             forDate:new Date(),
             name: req.body.name,
             body: req.body.body,
-            examples: req.body.examples,
-            testGeneratorPath: req.files.testGenerator.path,
+            // examples: req.body.examples,
+            testGeneratorPath: req.files.testGenerator[0].path,
             answerPath: req.files.answer[0].path
         })
 

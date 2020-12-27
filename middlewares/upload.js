@@ -32,7 +32,7 @@ const generateFilter = (req, file, cb)=>{
 }
 const uploadTestCase = multer ({
     storage:testCaseStorage,
-    fileFilter: generateFilter
+    // fileFilter: generateFilter
 });
 const generateId = function (req,res,next){
     const id = mongoose.Types.ObjectId();
