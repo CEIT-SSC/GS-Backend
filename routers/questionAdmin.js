@@ -17,8 +17,6 @@ router.post('/',authenticateSuperUser,async (req,res)=>{
             // u can generate auth and redirect to me url
         await questionAdmin.save().then(()=>{
             logger.info("new question admin created")
-        }).catch(err=>{
-            throw new Error("a question admin with this username already exists.");
         })
         res.status(201).send(questionAdmin);
     }catch(err){
