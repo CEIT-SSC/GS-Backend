@@ -20,6 +20,7 @@ const swaggerUI= require('swagger-ui-express');
 app.use(`/superarea`,require("./routers/superuser"));
 app.use('/questionadmin',require("./routers/questionAdmin"));
 app.use('/user',require("./routers/user"));
+app.use('/question', require("./routers/question"));
 app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swaggerSetUp));
 
 app.use(unknownEndpointHandler);
