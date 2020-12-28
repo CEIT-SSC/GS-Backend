@@ -4,7 +4,6 @@ const questionSchema= new mongoose.Schema({
     forDate:{
         type:Date,
         required: true,
-        default: Date.now
     },
     name:{
         type: String,
@@ -36,6 +35,12 @@ const questionSchema= new mongoose.Schema({
     }
 });
 // TODO toJson 
-
+questionSchema.methods.toJSON=function(){
+    const question = this;
+    const questionObj=question.toObject();
+    console.log(questionObj)
+    delete questionObj._id;
+    return questionObj;
+}
 
 module.exports=new mongoose.model("Question",questionSchema);
