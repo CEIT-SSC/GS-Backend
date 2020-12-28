@@ -2,6 +2,7 @@ const router = require("express").Router();
 const User = require("../models/User");
 const {authenticateSuperUser} = require("../middlewares/superUserAuth");
 const logger = require("../utils/logger");
+const { authenticateAdmin } = require("../middlewares/questionAdminAuth");
 
 router.get("/",authenticateSuperUser,async(req,res)=>{
     try{
@@ -28,7 +29,7 @@ router.get("/:studentNumber",authenticateSuperUser,async(req,res)=>{
     }
 });
 
-router.post("/",async(req,res)=>{
+router.post("/",authenticateAdmin,async(req,res)=>{
     try{
         if(!req.body.studentNumber ||!req.body.password){
             throw new Error("Enter student number and password")
@@ -46,6 +47,7 @@ router.post("/",async(req,res)=>{
         })
         
         const token = user.generateAuthToken();
+        if(!token) throw new Error("token couldn't be generated");
         res.status(201).send({user,token});
     }catch(error){
         res.status(500).send({
@@ -61,9 +63,7 @@ router.delete("/:studentNumber",authenticateSuperUser,async(req,res)=>{
             studentNumber:req.params.studentNumber
         }).then(removedUser=>{
             logger.info("user successfully removed");
-            res.send({
-                removedUser
-            });
+            res.send(removedUser);
         });
     }catch(err){
         res.status(500).send({
@@ -86,7 +86,7 @@ router.patch("/:studentNumber",authenticateSuperUser,async(req,res)=>{
         }
         Object.keys(req.body).forEach((fieldToUpdate)=>{
             user[fieldToUpdate] = req.body[fieldToUpdate];
-        })
+        });
         await user.save().then(()=>{
             logger.info("user updated successfully")
         })
