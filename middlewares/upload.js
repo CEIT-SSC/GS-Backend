@@ -19,18 +19,18 @@ const testCaseStorage = multer.diskStorage({
     }
 });
 
-const generateFilter = (req, file, cb)=>{
+// const generateFilter = (req, file, cb)=>{
     // if(file.fieldname ==="input" || file.fieldname==="output"){
     //     if(!file.originalname.match(/\.(txt)$/)){
     //         cb(new Error("please upload a text file"));
     //     }
     //     cb(undefined,true);
     
-    if(file.fieldname === "testGenerator"){
-        cb(null,true);
-    }
+//     if(file.fieldname === "testGenerator"){
+//         cb(null,true);
+//     }
 
-}
+// }
 const uploadTestCase = multer ({
     storage:testCaseStorage,
     // fileFilter: generateFilter
@@ -49,8 +49,42 @@ const generateIdAndDir = function (req,res,next){
         });
     }
 }
+const submitStorage= multer.diskStorage({
+    destination: function( req, file, cb){
+        console.log(`./data/user-submits/${req.user.studentNumber}/${req.body.questionID}`);
 
+        cb(null,`./data/user-submits/${req.user.studentNumber}/${req.body.questionID}`);
+    },
+    filename: function( req, file, cb) {
+        const ext=path.extname(file.originalname);
+        cb(null, file.originalname+ext);
+    }
+});
+
+const createSubmitDir = function(req,res,next){
+    const id =req.user.studentNumber;
+    const questionId = req.body.questionID;
+    console.log(`./data/user-submits/${id}/${req.body.questionID}`);
+    if(!fs.existsSync(`./data/user-submits/${id}/${questionId}`)){
+        fs.mkdir(`./data/user-submits/${id}/${questionId}`,{recursive:true},(err)=>{
+            if(err){
+                logger.error(err);
+                res.send(err);
+            }else{
+                logger.info("directory created successfully");
+                next();
+            }
+        });
+    }else{
+        next();
+    }
+}
+const submittion= multer({
+    storage:submitStorage
+})
 module.exports={
     uploadTestCase,
-    generateIdAndDir
+    generateIdAndDir,
+    createSubmitDir,
+    submittion
 };
