@@ -4,7 +4,8 @@ const fs= require("fs")
 const del = require("del");
 const {authenticateAdmin } = require("../middlewares/questionAdminAuth");
 const { uploadTestCase,
-      generateIdAndDir } = require ("../middlewares/upload")
+      generateIdAndDir } = require ("../middlewares/upload");
+const {authGetAccess} = require ("../middlewares/questionAccessAuth");
 const fieldstoUpload=[
     {name:'answer', maxCount:1},
     {name:'testGenerator', maxCount:1}
@@ -51,7 +52,7 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
 
 });
 //get questions
-router.get("/", authenticateAdmin, async(req,res)=>{
+router.get("/", authGetAccess, async(req,res)=>{
     try{
         //forDates should be handled
         const questions = await Question.find({});
@@ -62,9 +63,11 @@ router.get("/", authenticateAdmin, async(req,res)=>{
             error:err.message
         });
     }
-})
+});
 //get specific question
-
+router.get("/:questionName", authGetAccess, async(req,res)=>{
+    
+})
 //update question
 
 //delete question
