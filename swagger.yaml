@@ -249,7 +249,7 @@ paths:
             - token: "token"
         "400":
           description: "error will be returned"
-  /questionadmin/logout:
+  /questionadmin/me/logout:
     post:
       tags:
       - "Question Admin"
@@ -285,16 +285,25 @@ paths:
       - "application/json"
       parameters:
       - in: "header"
-        name: "token"
+        name: "Authorization"
         description: "superuser authentication"
         type: "string"
       responses:
         default:
           description: "successful operation"
           schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/User"
+            type: "object"
+            example:
+              studentNumber: "the student number of user"
+              testcase: 
+                - forQuestion: "the question for"
+                  input: "question inputs"
+                  output: " the question output"
+              codes:
+                - forQuestion: "the questionFor"
+                  code: "the path of uploaded code"
+                  
+              
         "500":
           description: "error will be returned"
     post:
@@ -322,7 +331,6 @@ paths:
             type: "object"
             example:
             - studentNumber: "user student number"
-              password: "hashed password"
               question : "[empty list representing current questions]"
             - token: "user token"
         "500":
@@ -418,11 +426,47 @@ paths:
           schema:
             type: "object"
             example:
-              studentNumber: "user student number"
-              password: "hashed password"
-              question : "[list representing current questions]"
+              removedUser: 
+                studentNumber: "user student number"
+                testCases: "[list representing user testcases]"
+                codes : "[list representing current questions]"
+              message: "user successfully removed"
         "500":
           description: "error will be returned"
+  /user/login:
+    get:
+      tags:
+      - "User"
+      summary: "login into account"
+      description: "This can only be done by anyone."
+      operationId: "userlogin"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "request body"
+        schema:
+          type: "object"
+          example:
+            studentNumber: "user student's number"
+            password: "user password"
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            example:
+              user:
+                studentNumber: "the student number of user"
+                testcase: 
+                  - 
+                codes:
+                  - 
+              token: "the generated token"
+        "400":
+          description: "error will be returned, propably bad request"
   /question/:
     post:
       tags:
@@ -453,7 +497,7 @@ paths:
       - name: "examples"
         in: "formData"
         required: true
-        description: "an stringified array of object containing inputs and outputs"
+        description: "an stringified array of object containing inputs and outputs => {input:sth,output:sth}"
         type: "string"
       - name: "testGenerator"
         in: "formData"
@@ -474,17 +518,7 @@ paths:
         "201":
           description: "successfully creates question and send its object"
           schema:
-            type: "object"
-            example:
-              forDate: "the for date"
-              name: "name of the question"
-              body: "the body of question"
-              examples:
-                - _id: "id of example"
-                  input: "example of input"
-                  output: "example of output"
-              testGeneratorPath: "the path of testgenerator file"
-              answerPath: "the path of answer file"
+            $ref: "#/definitions/Question"
 
         "400":
           description: "Bad request .error will be returned"  
@@ -504,17 +538,7 @@ paths:
         "200":
           description: "return the list of all questions"
           schema:
-            type: "object"
-            example:
-              - forDate: "the for date"
-                name: "name of the question"
-                body: "the body of question"
-                examples:
-                  - _id: "id of example"
-                    input: "example of input"
-                    output: "example of output"
-                testGeneratorPath: "the path of testgenerator file"
-                answerPath: "the path of answer file"
+            $ref: "#/definitions/Question"
   /question/{questionName}:
     get:
       tags:
@@ -539,8 +563,40 @@ paths:
              $ref: "#/definitions/Question"
         "500":
           description: "error message will be printed"
-        
-      
+    delete:
+      tags:
+        - "Question"
+      description: "it can only be done by superuser and question admin"
+      summary: "delete specified question"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "questionName"
+          required: true
+          type: "string"
+        - in: "header"
+          name: "Authorization"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "returns removed question and a message"
+          schema:
+            example:
+              removedQuestion: 
+                _id: "the id used in db"
+                forDate: "the for date"
+                name: "name of the question"
+                body: "the body of question"
+                examples:
+                  - _id: "id of example"
+                    input: "example of input"
+                    output: "example of output"
+                testGeneratorPath: "the path of testgenerator file"
+                answerPath: "the path of answer file"
+              message : "successfully removed"
+
   # /user/login:
   #   get:
   #     tags:
@@ -693,6 +749,9 @@ definitions:
   Question:
     type: "object"
     properties:
+      _id:
+        type: "string"
+        example: "the id of question used in db"
       forDate:
         type: "string"
         example: "for date"
