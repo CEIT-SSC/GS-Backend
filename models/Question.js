@@ -41,7 +41,7 @@ questionSchema.methods.toJSON=function(){
     questionObj.testGeneratorPath= "./"+questionObj.testGeneratorPath;
     questionObj.answerPath= "./"+questionObj.answerPath;
 
-    delete questionObj._id;
+    // delete questionObj._id;
     return questionObj;
 }
 

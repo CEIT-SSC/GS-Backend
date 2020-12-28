@@ -15,8 +15,8 @@ const fieldstoUpload=[
     {name:'testGenerator', maxCount:1}
 ]
 
-const removeDirIfFailed=async (req,folder)=>{
-    const dir= `./data/${folder}/${req.objectId}`;
+const removeDir=async (id,folder)=>{
+    const dir= `./data/${folder}/${id}`;
     try {
         await del(dir);
 
@@ -49,7 +49,7 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
 
         res.status(201).send(question);
     }catch(err){
-        removeDirIfFailed(req,'questions');
+        removeDir(req.objectId,'questions');
         logger.error(err.message);
         res.status(400).send({error:err.message});
     }
@@ -94,6 +94,7 @@ router.delete("/:questionName",authenticateAdmin,async (req,res)=>{
             name:req.params.questionName
         }).then(removedQuestion=>{
             logger.info("question successfully removed");
+            removeDir(removedQuestion._id,"questions");
             res.status(200).send({
                 removedQuestion,
                 message: "successfully removed"});
