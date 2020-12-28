@@ -539,7 +539,7 @@ paths:
           description: "return the list of all questions"
           schema:
             $ref: "#/definitions/Question"
-  /question/{questionName}:
+  /question/{id}:
     get:
       tags:
         - "Question"
@@ -549,7 +549,7 @@ paths:
         - "application/json"
       parameters:
         - in: "path"
-          name: "questionName"
+          name: "id"
           required: true
           type: "string"
         - in: "header"
@@ -572,7 +572,7 @@ paths:
         - "application/json"
       parameters:
         - in: "path"
-          name: "questionName"
+          name: "id"
           required: true
           type: "string"
         - in: "header"
