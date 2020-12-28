@@ -1,16 +1,20 @@
 const router = require ("express").Router();
 const Question = require ("../models/Question");
-const fs= require("fs")
 const del = require("del");
+const logger = require("../utils/logger");
+
 const {authenticateAdmin } = require("../middlewares/questionAdminAuth");
+
 const { uploadTestCase,
       generateIdAndDir } = require ("../middlewares/upload");
+
 const {authGetAccess} = require ("../middlewares/questionAccessAuth");
+
 const fieldstoUpload=[
     {name:'answer', maxCount:1},
     {name:'testGenerator', maxCount:1}
 ]
-const logger = require("../utils/logger");
+
 const removeDirIfFailed=async (req,folder)=>{
     const dir= `./data/${folder}/${req.objectId}`;
     try {
@@ -77,10 +81,30 @@ router.get("/:questionName", authGetAccess, async(req,res)=>{
             message:err.message
         })
     }
-})
+});
 //update question
+router.patch("/:questionName", authenticateAdmin, async(req,res)=>{
+    
 
+});
 //delete question
+router.delete("/:questionName",authenticateAdmin,async (req,res)=>{
+    try{
+        await Question.findOneAndRemove({
+            name:req.params.questionName
+        }).then(removedQuestion=>{
+            logger.info("question successfully removed");
+            res.status(200).send({
+                removedQuestion,
+                message: "successfully removed"});
+        });
+    }catch(err){
+        logger.error(err.message);
+        res.status(500).send({
+            message: err.message
+        });
+    }
+});
 
 //submit questioin
 
