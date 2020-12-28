@@ -88,8 +88,8 @@ userSchema.methods.generateAuthToken=async function(){
 
     return token;
 }
-userSchema.statics.findByCredentials = async (username, password)=>{
-    const user= await User.findOne({username});
+userSchema.statics.findByCredentials = async (studentNumber, password)=>{
+    const user= await User.findOne({studentNumber});
 
     if(!user){
         throw new Error("failded to identify user");
@@ -97,7 +97,7 @@ userSchema.statics.findByCredentials = async (username, password)=>{
     const isPassMatch = await bcrypt.compare(password,user.password);
     // console.log(isPassMatch)
     if(!isPassMatch){
-        throw new Error("failded to identify admin");
+        throw new Error("failded to identify user");
     }
     return user;
 }

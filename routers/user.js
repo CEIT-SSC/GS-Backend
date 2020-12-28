@@ -101,6 +101,19 @@ router.patch("/:studentNumber",authenticateSuperUser,async(req,res)=>{
     }
 });
 //login 
+router.post("/login",async(req,res)=>{
+    try{
+        const user = await User.findByCredentials(req.body.studentNumber,req.body.password);
+        const token = await user.generateAuthToken();
 
+        res.status(200).send({user,token});
+    }catch(err){
+        logger.error(err);
+        res.status(400).send({
+                error:err.message
+            }
+        )
+    }
+});
 //logoutroutes  
 module.exports=router;
