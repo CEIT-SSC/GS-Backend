@@ -13,6 +13,8 @@ tags:
   description: ""
 - name: "User"
   description: "Operations about user"
+- name: "Question"
+  description: "Question and testcases endpoint"
 
 schemes:
 # - "https"
@@ -88,7 +90,10 @@ paths:
         in: "body"
         required: true
         schema:
-          $ref: "#/definitions/QuestionAdmin"
+          type: "object"
+          example:
+            username: "question admins username"
+            password: "question admin's password"
       - name: "superuser Auth"
         in: "header"
         required: true
@@ -391,7 +396,7 @@ paths:
           description: "error will be displayed "
     delete:
       tags:
-      - "User"
+       - "User"
       summary: "Delete user"
       description: "This can only be done by the logged in user or super admin."
       operationId: "deleteUser"
@@ -418,6 +423,67 @@ paths:
               question : "[list representing current questions]"
         "500":
           description: "error will be returned"
+  /question/:
+      post:
+        tags:
+         - "Question"
+        summary: "creates new question"
+        description: "This can be done only by superuser or question admin. notice content of the request should be FORM-DATA"
+        operationId: "createQuestion"
+        consumes:
+        - "multipart/form-data"
+        produces:
+        - "application/json"
+        parameters:
+        - name: "forDate"
+          in: "formData"
+          description: "the specified date in string"
+          required: true
+          type: "string"
+        - name: "name"
+          in: "formData"
+          description: "the name of the question"
+          required: true
+          type: "string"
+        - name: "body"
+          in: "formData"
+          required: true
+          description: "the body if question in string"
+          type: "string"
+        - name: "examples"
+          in: "formData"
+          required: true
+          description: "an stringified array of object containing inputs and outputs"
+          type: "string"
+        - name: "testGenerator"
+          in: "formData"
+          required: true
+          type: "file"
+          description: "the file of testGenerator . notice it can be only one file"
+        - name: "answer"
+          in: "formData"
+          required: true
+          type: "file"
+          description: "the file of answer . notice it can be only one file"
+        responses:
+          "201":
+            description: "successfully removed and returns removed user"
+            schema:
+              type: "object"
+              example:
+                forDate: "the for date"
+                name: "name of the question"
+                body: "the body of question"
+                examples:
+                  - _id: "id of example"
+                    input: "example of input"
+                    output: "example of output"
+                testGeneratorPath: "the path of testgenerator file"
+                answerPath: "the path of answer file"
+
+          "400":
+            description: "Bad request .error will be returned"         
+         
   # /user/login:
   #   get:
   #     tags:
