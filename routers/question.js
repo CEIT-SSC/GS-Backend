@@ -6,9 +6,12 @@ const logger = require("../utils/logger");
 const {authenticateAdmin } = require("../middlewares/questionAdminAuth");
 
 const { uploadTestCase,
-      generateIdAndDir } = require ("../middlewares/upload");
+      generateIdAndDir,
+      submittion,
+      createSubmitDir } = require ("../middlewares/upload");
 
 const {authGetAccess} = require ("../middlewares/questionAccessAuth");
+const { authenticateUser } = require("../middlewares/userAuth");
 
 const fieldstoUpload=[
     {name:'answer', maxCount:1},
@@ -108,10 +111,16 @@ router.delete("/:questionName",authenticateAdmin,async (req,res)=>{
 });
 
 //submit questioin
+router.post("/submit",authenticateUser,createSubmitDir,submittion.single('code'),async(req,res)=>{
+    try{
+        console.log(req.user)
+        console.log(req.body)
+        console.log(req.file)
+    }catch(err){
+        err.send(
+            err
+        )
+    }
+});
 
-//user login
-
-//user me 
-
-//user logout
 module.exports=router;
