@@ -2,18 +2,19 @@ const multer = require ("multer");
 const mongoose = require("mongoose");
 const fs = require("fs");
 const logger = require("../utils/logger");
+const path= require ("path");
 
 const testCaseStorage = multer.diskStorage({
     destination: function( req, file, cb){
-        console.log(file)
         cb(null,`./data/questions/${req.objectId}`);
     },
     filename: function( req, file, cb) {
+        const ext=path.extname(file.originalname);
         if(file.fieldname === "testGenerator"){
-            cb(null, `testGenerator_${req.objectId}`);
+            cb(null, `testGenerator_${req.objectId}`+ext);
         }
         else if (file.fieldname === "answer"){
-            cb(null, `answer_${req.objectId}`);
+            cb(null, `answer_${req.objectId}`+ext);
         }
     }
 });
@@ -34,24 +35,22 @@ const uploadTestCase = multer ({
     storage:testCaseStorage,
     // fileFilter: generateFilter
 });
-const generateId = function (req,res,next){
+const generateIdAndDir = function (req,res,next){
     const id = mongoose.Types.ObjectId();
     req.objectId=id;
-    next();
-}
-const generateDir= function (req,res,next){
-    fs.mkdir(`./data/questions/${req.objectId}`,(err)=>{
-        if(err){
-            logger.error(err.message);
-        }else{
-            logger.info("directory created successfully");
-            next();
-        }
-    })
+    if(!fs.existsSync(`./data/questions/${id}`)){
+        fs.mkdir(`./data/questions/${id}`,{recursive:true},(err)=>{
+            if(err){
+                logger.error(err.message);
+            }else{
+                logger.info("directory created successfully");
+                next();
+            }
+        });
+    }
 }
 
 module.exports={
     uploadTestCase,
-    generateId,
-    generateDir
+    generateIdAndDir
 };
