@@ -44,9 +44,9 @@ paths:
           schema:
             type: "object"
             example:
-            - username: "superuser username"
-              password: "hashed password"
-            - token: "generated token"
+             admin:
+              username: "superuser username"
+             token: "generated token"
         "400":
           description: "Error while validating"
 
@@ -71,7 +71,7 @@ paths:
           schema:
             type: "object"
             example:
-              - message: "successfully logged out"
+                message: "successfully logged out"
               
         "500":
           description: "internal server error"
@@ -515,7 +515,32 @@ paths:
                     output: "example of output"
                 testGeneratorPath: "the path of testgenerator file"
                 answerPath: "the path of answer file"
-                
+  /question/{questionName}:
+    get:
+      tags:
+        - "Question"
+      description: "it can be done by user & superuser & question admin"
+      summary: " returns specified question"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "questionName"
+          required: true
+          type: "string"
+        - in: "header"
+          name: "Authorization"
+          required: true
+          type: "string"
+      responses:
+        "200":
+           description: " return question with specified name"
+           schema: 
+             $ref: "#/definitions/Question"
+        "500":
+          description: "error message will be printed"
+        
+      
   # /user/login:
   #   get:
   #     tags:
@@ -670,10 +695,13 @@ definitions:
     properties:
       forDate:
         type: "string"
+        example: "for date"
       name:
         type: "string"
+        example: "name of the question"
       body:
         type: "string"
+        example: "body of the question"
       examples:
         type: "array"
         items:
@@ -681,10 +709,14 @@ definitions:
           properties:
             input:
               type: "string"
+              example: "example of input"
             output:
               type: "string"
+              example: "example of output"
       testGeneratorPath:
         type: "string"
+        example: "the path of testgenerator file"
       answerPath:
         type: "string"
+        example: "the path of answer file"
 
