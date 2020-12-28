@@ -71,10 +71,10 @@ router.get("/", authGetAccess, async(req,res)=>{
     }
 });
 //get specific question
-router.get("/:questionName", authGetAccess, async(req,res)=>{
+router.get("/:id", authGetAccess, async(req,res)=>{
     try{
-        const question = await Question.findOne({
-            name:req.params.questionName
+        const question = await Question.findById({
+            _id:req.params.id
         });
         if(!question) throw new Error("Couldnt find requested question");
         res.status(200).send(question);
@@ -90,10 +90,10 @@ router.patch("/:questionName", authenticateAdmin, async(req,res)=>{
 
 });
 //delete question
-router.delete("/:questionName",authenticateAdmin,async (req,res)=>{
+router.delete("/:id",authenticateAdmin,async (req,res)=>{
     try{
         await Question.findOneAndRemove({
-            name:req.params.questionName
+            _id:req.params.id
         }).then(removedQuestion=>{
             logger.info("question successfully removed");
             removeDir(removedQuestion._id,"questions");
@@ -116,6 +116,7 @@ router.post("/submit",authenticateUser,submittion.single('code'),async(req,res)=
 
         res.status(200).send(" file submitted successfully")
     }catch(err){
+        removeDir("user-submits",`${req.user.studentNumber}/${req.body.questionID}`);
         logger.error(err);
         err.send(
             err
