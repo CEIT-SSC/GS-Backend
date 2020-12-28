@@ -3,6 +3,7 @@ const User = require("../models/User");
 const {authenticateSuperUser} = require("../middlewares/superUserAuth");
 const logger = require("../utils/logger");
 const { authenticateAdmin } = require("../middlewares/questionAdminAuth");
+const { authenticateUser } = require("../middlewares/userAuth");
 
 router.get("/",authenticateSuperUser,async(req,res)=>{
     try{
@@ -116,4 +117,17 @@ router.post("/login",async(req,res)=>{
     }
 });
 //logoutroutes  
+router.post("/me/logout",authenticateUser, async(req,res)=>{
+    try{
+        req.user.tokens=req.user.tokens.filter((token)=>token.token!==req.token);
+        await req.user.save();
+        res.send({
+            message:"logged out successfully"
+        })
+    }catch(err){
+        res.status(500).send({
+            error:err.message
+        });
+    }
+});
 module.exports=router;
