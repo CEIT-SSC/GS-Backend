@@ -66,7 +66,17 @@ router.get("/", authGetAccess, async(req,res)=>{
 });
 //get specific question
 router.get("/:questionName", authGetAccess, async(req,res)=>{
-    
+    try{
+        const question = await Question.findOne({
+            name:req.params.questionName
+        });
+        if(!question) throw new Error("Couldnt find requested question");
+        res.status(200).send(question);
+    }catch(err){
+        res.status(500).send({
+            message:err.message
+        })
+    }
 })
 //update question
 
