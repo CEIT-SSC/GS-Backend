@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const {default : validator }= require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const config = require ("../utils/config");
 const userSchema= new mongoose.Schema({
     studentNumber:{
         type:String,
@@ -81,7 +81,7 @@ userSchema.methods.toJSON=function(){
 //TODO : add jwt authentication
 userSchema.methods.generateAuthToken=async function(){
     const user=this;
-    const token =jwt.sign({_id:admin._id.toString()}, config.JWT_SECRET);
+    const token =jwt.sign({_id:user._id.toString()}, config.JWT_SECRET);
 
     user.tokens= user.tokens.concat({token});
     await user.save();

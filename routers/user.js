@@ -46,7 +46,7 @@ router.post("/",authenticateAdmin,async(req,res)=>{
             logger.info("new user created");
         })
         
-        const token = user.generateAuthToken();
+        const token = await user.generateAuthToken();
         if(!token) throw new Error("token couldn't be generated");
         res.status(201).send({user,token});
     }catch(error){
@@ -63,7 +63,9 @@ router.delete("/:studentNumber",authenticateSuperUser,async(req,res)=>{
             studentNumber:req.params.studentNumber
         }).then(removedUser=>{
             logger.info("user successfully removed");
-            res.send(removedUser);
+            res.send({
+                removedUser,
+                message:"user successfully removed"});
         });
     }catch(err){
         res.status(500).send({
