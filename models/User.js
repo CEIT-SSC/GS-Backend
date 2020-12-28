@@ -88,6 +88,19 @@ userSchema.methods.generateAuthToken=async function(){
 
     return token;
 }
+userSchema.statics.findByCredentials = async (username, password)=>{
+    const user= await User.findOne({username});
+
+    if(!user){
+        throw new Error("failded to identify user");
+    }
+    const isPassMatch = await bcrypt.compare(password,user.password);
+    // console.log(isPassMatch)
+    if(!isPassMatch){
+        throw new Error("failded to identify admin");
+    }
+    return user;
+}
 
 userSchema.pre('save',async function(next){
     const user=this;
