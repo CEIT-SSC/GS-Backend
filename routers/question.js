@@ -51,7 +51,18 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
 
 });
 //get questions
-
+router.get("/", authenticateAdmin, async(req,res)=>{
+    try{
+        //forDates should be handled
+        const questions = await Question.find({});
+        res.status(200).send(questions);
+    }catch(err){
+        logger.error(err.message);
+        res.status(500).send({
+            error:err.message
+        });
+    }
+})
 //get specific question
 
 //update question
