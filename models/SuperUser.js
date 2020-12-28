@@ -63,9 +63,10 @@ superSchema.methods.toJSON= function(){
     const admin =this;
     const adminObj= admin.toObject();
     
+    delete adminObj._id;
     delete adminObj.password;
     delete adminObj.tokens;
-    
+    delete adminObj.__v;
     return adminObj;
 }
 const SuperUser=new mongoose.model('SuperUser', superSchema);

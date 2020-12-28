@@ -74,7 +74,8 @@ userSchema.methods.toJSON=function(){
     const userObj=user.toObject();
     delete userObj.tokens;
     delete userObj.password;
-
+    delete userObj._id;
+    delete userObj.__v;
     return userObj;
 }
 //TODO : add jwt authentication

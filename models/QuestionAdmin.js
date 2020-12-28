@@ -65,7 +65,8 @@ questionAdminSchema.statics.findByCredentials = async (username, password)=>{
 questionAdminSchema.methods.toJSON=function(){
     const admin = this;
     const adminObj=admin.toObject();
-
+    delete adminObj._id;
+    delete adminObj.__v;
     delete adminObj.tokens;
     delete adminObj.password;
 
