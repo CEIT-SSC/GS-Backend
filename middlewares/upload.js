@@ -51,9 +51,19 @@ const generateIdAndDir = function (req,res,next){
 }
 const submitStorage= multer.diskStorage({
     destination: function( req, file, cb){
-        console.log(`./data/user-submits/${req.user.studentNumber}/${req.body.questionID}`);
-
-        cb(null,`./data/user-submits/${req.user.studentNumber}/${req.body.questionID}`);
+        const id =req.user.studentNumber;
+        const questionId = req.body.questionID;
+        if(!fs.existsSync(`./data/user-submits/${id}/${questionId}`)){
+            fs.mkdir(`./data/user-submits/${id}/${questionId}`,{recursive:true},(err)=>{
+                if(err){
+                    logger.error(err);
+                    cb(new Error(err.message));
+                }else{
+                    logger.info("directory created successfully");
+                }
+            });
+        }
+        cb(null,`./data/user-submits/${id}/${questionId}`);
     },
     filename: function( req, file, cb) {
         const ext=path.extname(file.originalname);
@@ -61,30 +71,11 @@ const submitStorage= multer.diskStorage({
     }
 });
 
-const createSubmitDir = function(req,res,next){
-    const id =req.user.studentNumber;
-    const questionId = req.body.questionID;
-    console.log(`./data/user-submits/${id}/${req.body.questionID}`);
-    if(!fs.existsSync(`./data/user-submits/${id}/${questionId}`)){
-        fs.mkdir(`./data/user-submits/${id}/${questionId}`,{recursive:true},(err)=>{
-            if(err){
-                logger.error(err);
-                res.send(err);
-            }else{
-                logger.info("directory created successfully");
-                next();
-            }
-        });
-    }else{
-        next();
-    }
-}
 const submittion= multer({
     storage:submitStorage
 })
 module.exports={
     uploadTestCase,
     generateIdAndDir,
-    createSubmitDir,
     submittion
 };

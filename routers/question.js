@@ -7,8 +7,7 @@ const {authenticateAdmin } = require("../middlewares/questionAdminAuth");
 
 const { uploadTestCase,
       generateIdAndDir,
-      submittion,
-      createSubmitDir } = require ("../middlewares/upload");
+      submittion} = require ("../middlewares/upload");
 
 const {authGetAccess} = require ("../middlewares/questionAccessAuth");
 const { authenticateUser } = require("../middlewares/userAuth");
@@ -111,12 +110,13 @@ router.delete("/:questionName",authenticateAdmin,async (req,res)=>{
 });
 
 //submit questioin
-router.post("/submit",authenticateUser,createSubmitDir,submittion.single('code'),async(req,res)=>{
+router.post("/submit",authenticateUser,submittion.single('code'),async(req,res)=>{
     try{
-        console.log(req.user)
-        console.log(req.body)
-        console.log(req.file)
+            // possibly doing other things in here
+
+        res.status(200).send(" file submitted successfully")
     }catch(err){
+        logger.error(err);
         err.send(
             err
         )
