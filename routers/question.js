@@ -7,7 +7,8 @@ const {authenticateAdmin } = require("../middlewares/questionAdminAuth");
 
 const { uploadTestCase,
       generateIdAndDir,
-      submittion} = require ("../middlewares/upload");
+      submittion,
+        patchHandler} = require ("../middlewares/upload");
 
 const {authGetAccess} = require ("../middlewares/questionAccessAuth");
 const { authenticateUser } = require("../middlewares/userAuth");
@@ -34,6 +35,9 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
         if(!req.body.name || !req.body.body){
             throw new Error("please complete all fields");
         }   
+        if(!req.files.testGenerator || !req.files.answer){
+            throw new Error("both testGenerator and answer files should be send")
+        }
         //TODO :date should be handeled
         const question= new Question({
             _id:req.objectId,
@@ -44,11 +48,13 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
             testGeneratorPath: req.files.testGenerator[0].path,
             answerPath: req.files.answer[0].path
         })
-
+        //bug in deleting folders in unexpected fields
+        
         await question.save().then(()=>{
             logger.info("question saved successfully");
         })
-
+        delete question.examples[0]._id;
+        await question.save();
         res.status(201).send(question);
     }catch(err){
         removeDir(req.objectId,'questions');
@@ -85,8 +91,33 @@ router.get("/:id", authGetAccess, async(req,res)=>{
     }
 });
 //update question
-router.patch("/:questionName", authenticateAdmin, async(req,res)=>{
-    
+router.patch("/:id", authenticateAdmin, patchHandler.fields(fieldstoUpload), async(req,res)=>{
+    try{
+        const question = await Question.findOne({
+            _id:req.params.id
+        }).catch(err=>{
+            //customize errors
+            throw new Error("couldn't find the question");
+        })
+        console.log(question.examples[0]);
+    // console.log(JSON.parse(req.body.examples));
+    Object.keys(req.body).forEach(fieldToUpdate=>{
+        if(fieldToUpdate=== "examples")question.examples=[...question.examples,...JSON.parse(req.body[fieldToUpdate])];
+        //add date parsing
+        question[fieldToUpdate]=req.body[fieldToUpdate];
+    });
+    await question.save().then(()=>{
+        logger.info("question updated successfully");
+    })
+    res.status(200).send(question);
+    }catch(err){
+        logger.error({
+            error:err.message
+        });
+        res.status(500).send({
+            error:err.message
+        })
+    }
 
 });
 //delete question
