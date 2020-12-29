@@ -19,18 +19,6 @@ const testCaseStorage = multer.diskStorage({
     }
 });
 
-// const generateFilter = (req, file, cb)=>{
-    // if(file.fieldname ==="input" || file.fieldname==="output"){
-    //     if(!file.originalname.match(/\.(txt)$/)){
-    //         cb(new Error("please upload a text file"));
-    //     }
-    //     cb(undefined,true);
-    
-//     if(file.fieldname === "testGenerator"){
-//         cb(null,true);
-//     }
-
-// }
 const uploadTestCase = multer ({
     storage:testCaseStorage,
     // fileFilter: generateFilter
@@ -70,21 +58,6 @@ const submitStorage= multer.diskStorage({
         cb(null, file.originalname+ext);
     }
 });
- function removeFiles(id,fieldName){
-    try{
-         const files=glob.sync(`./data/questions/${id}/${fieldName}*`,
-        );
-        files.forEach(file=>{
-            fs.unlink(file,err=>{
-                if(err) cb(new Error(err));
-            });
-        });
-        console.log(files);
-    }catch(err){
-        console.log(err);
-    }
-    
-}
 const patchStorage= multer.diskStorage({
     destination:async function (req,file,cb){
 
@@ -95,7 +68,6 @@ const patchStorage= multer.diskStorage({
                 if(err) cb(new Error(err));
             });
         });
-        console.log(files);
         // removeFiles(req.params.id,file.fieldname);
         cb(null,`./data/questions/${req.params.id}/`);
     },
