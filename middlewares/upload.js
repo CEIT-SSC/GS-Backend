@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const logger = require("../utils/logger");
 const path= require ("path");
-
+const glob = require ("glob");
 const testCaseStorage = multer.diskStorage({
     destination: function( req, file, cb){
         cb(null,`./data/questions/${req.objectId}`);
@@ -70,12 +70,49 @@ const submitStorage= multer.diskStorage({
         cb(null, file.originalname+ext);
     }
 });
+ function removeFiles(id,fieldName){
+    try{
+         const files=glob.sync(`./data/questions/${id}/${fieldName}*`,
+        );
+        files.forEach(file=>{
+            fs.unlink(file,err=>{
+                if(err) cb(new Error(err));
+            });
+        });
+        console.log(files);
+    }catch(err){
+        console.log(err);
+    }
+    
+}
+const patchStorage= multer.diskStorage({
+    destination:async function (req,file,cb){
 
+        const files=glob.sync(`./data/questions/${req.params.id}/${file.fieldname}*`,
+        );
+        files.forEach(file=>{
+            fs.unlink(file,err=>{
+                if(err) cb(new Error(err));
+            });
+        });
+        console.log(files);
+        // removeFiles(req.params.id,file.fieldname);
+        cb(null,`./data/questions/${req.params.id}/`);
+    },
+    filename: function ( req, file, cb){
+        const ext=path.extname(file.originalname);
+        cb(null, `${file.fieldname}_${req.params.id}`+ext);
+    }
+})
 const submittion= multer({
     storage:submitStorage
+})
+const patchHandler = multer({
+    storage:patchStorage
 })
 module.exports={
     uploadTestCase,
     generateIdAndDir,
-    submittion
+    submittion,
+    patchHandler
 };
