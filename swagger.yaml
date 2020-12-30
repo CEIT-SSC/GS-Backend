@@ -596,6 +596,78 @@ paths:
                 testGeneratorPath: "the path of testgenerator file"
                 answerPath: "the path of answer file"
               message : "successfully removed"
+    patch:
+      tags:
+        - "Question"
+      summary: "updates specified question"
+      description: "This can be done only by superuser or question admin. notice content of the request should be FORM-DATA. notice not all of these fields and files should be present"
+      operationId: "updateQuestion"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+        description: "id of question in the db"
+      - name: "forDate"
+        in: "formData"
+        description: "the specified date in string"
+        required: true
+        type: "string"
+      - name: "name"
+        in: "formData"
+        description: "the name of the question"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "formData"
+        required: true
+        description: "the body if question in string"
+        type: "string"
+      - name: "examples"
+        in: "formData"
+        required: true
+        description: "an stringified array of object containing inputs and outputs => {input:sth,output:sth}"
+        type: "string"
+      - name: "testGenerator"
+        in: "formData"
+        required: true
+        type: "file"
+        description: "the file of testGenerator . notice it can be only one file"
+      - name: "answer"
+        in: "formData"
+        required: true
+        type: "file"
+        description: "the file of answer . notice it can be only one file"
+      - name: "Authorization"
+        in: "header"
+        required: true
+        type: "string"
+        description: "the bearer auth"
+      responses:
+        "200":
+          description: "returns updated question and a message"
+          schema:
+            example:
+              updatedQuestion: 
+                _id: "the id used in db"
+                forDate: "the for date"
+                name: "name of the question"
+                body: "the body of question"
+                examples:
+                  - _id: "id of example"
+                    input: "example of input"
+                    output: "example of output"
+                testGeneratorPath: "the path of testgenerator file"
+                answerPath: "the path of answer file"
+              message : "successfully updated"
+
+        "500":
+          description: "error will be returned"
+          
 
   # /user/login:
   #   get:
