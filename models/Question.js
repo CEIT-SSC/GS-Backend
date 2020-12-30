@@ -1,5 +1,14 @@
 const mongoose= require("mongoose")
-
+const exampleSchema = new mongoose.Schema({
+    input:{
+        required:true,
+        type:String 
+    },
+    output:{
+        type:String,
+        required:true
+    }
+})
 const questionSchema= new mongoose.Schema({
     forDate:{
         type:Date,
@@ -13,18 +22,19 @@ const questionSchema= new mongoose.Schema({
         type: String,
         required:true,
     },
-    examples:[
-        {
-            input:{
-                type: String,
-                required:true,
-            },
-            output:{
-                type: String,
-                required: true
-            }
-        }
-    ],
+    examples: [exampleSchema],
+    // examples:[
+    //     {
+    //         input:{
+    //             type: String,
+    //             required:true,
+    //         },
+    //         output:{
+    //             type: String,
+    //             required: true
+    //         }
+    //     }
+    // ],
     testGeneratorPath:{
         type:String,
         required:true
@@ -40,7 +50,7 @@ questionSchema.methods.toJSON=function(){
     const questionObj=question.toObject();
     questionObj.testGeneratorPath= "./"+questionObj.testGeneratorPath;
     questionObj.answerPath= "./"+questionObj.answerPath;
-
+    delete questionObj.__v;
     // delete questionObj._id;
     return questionObj;
 }
