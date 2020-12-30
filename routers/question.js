@@ -99,33 +99,23 @@ router.patch("/:id", authenticateAdmin, patchHandler.fields(fieldstoUpload), asy
             //customize errors
             throw new Error("couldn't find the question");
         })
-        // console.log(question.examples[0]);
-    // console.log(JSON.parse(req.body.examples));
-    Object.keys(req.body).forEach(fieldToUpdate=>{
+    for(let fieldToUpdate in req.body){
         if(fieldToUpdate=== "examples"){
             const exampleList= JSON.parse(req.body.examples);
-            exampleList.forEach(obj=>{
-                console.log(obj);
-                const questionExamples=question.examples.slice();
-                questionExamples.push(obj)
-                // question.examples.push({
-                //     "input":obj.input,
-                //     "output": obj.output
-                // });
-                question.examples=questionExamples;
-                console.log(question.examples);
-
-            })
-            // question.examples=[...question.examples,...JSON.parse(req.body[fieldToUpdate])];
-            // question.examples.push()
+            question.examples=[];
+            await question.save();
+            for(let example of exampleList){
+                question.examples.push(example);
+            }
+        }else{
+            question[fieldToUpdate]=req.body[fieldToUpdate];
         }
-        //add date parsing
-        question[fieldToUpdate]=req.body[fieldToUpdate];
-    });
+    }
     await question.save().then(()=>{
         logger.info("question updated successfully");
     })
-    res.status(200).send(question);
+    res.status(200).send({updatedQuestion,
+        message:"successfully updated"});
     }catch(err){
         logger.error({
             error:err.message
