@@ -116,6 +116,7 @@ router.post("/login",async(req,res)=>{
         )
     }
 });
+
 //logoutroutes  
 router.post("/me/logout",authenticateUser, async(req,res)=>{
     try{
@@ -130,4 +131,19 @@ router.post("/me/logout",authenticateUser, async(req,res)=>{
         });
     }
 });
+
+router.post("/me/changepass",authenticateUser,async (req,res)=>{
+    try{
+        const user= req.user;
+        user.password = req.body.password;
+        await user.save();
+        res.send({user,
+            message: "password updated successfully"
+        })
+    }catch(err){
+        res.status(500).send({
+            error:err.message
+        })
+    }
+})
 module.exports=router;
