@@ -57,6 +57,12 @@ const userSchema= new mongoose.Schema({
             code:{
                 type: String,
                 require:true
+            },
+            state:{
+                type: String, 
+                enum: ['finished' , 'workingOn' , 'notTouched'],
+                default: 'notTouched',
+                require: true
             }
         }
     ],
