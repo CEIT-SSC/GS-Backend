@@ -4,6 +4,7 @@ const {authenticateSuperUser} = require("../middlewares/superUserAuth");
 const logger = require("../utils/logger");
 const { authenticateAdmin } = require("../middlewares/questionAdminAuth");
 const { authenticateUser } = require("../middlewares/userAuth");
+const Question = require("../models/Question");
 
 router.get("/",authenticateSuperUser,async(req,res)=>{
     try{
@@ -140,6 +141,33 @@ router.post("/me/changepass",authenticateUser,async (req,res)=>{
         res.send({user,
             message: "password updated successfully"
         })
+    }catch(err){
+        res.status(500).send({
+            error:err.message
+        })
+    }
+});
+
+router.get("/me/getquestion/", authenticateUser, async(req,res)=>{
+    try{
+        const questions= await Question.find({
+            forDate: {
+                $lte: new Date()
+            }
+        })
+        .sort({forDate:'descending'}).then(questions=>{
+            for(const question of questions){
+                question.set('state','notTouched',{strict:false});
+                for( let code in req.user.codes){
+                    if (code.forQuestion === question._id){
+                        question.set('state',code.state,{strict:false});
+                    }
+                }
+            }
+            return questions;
+        });
+
+        res.status(200).send(questions);
     }catch(err){
         res.status(500).send({
             error:err.message
