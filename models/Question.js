@@ -23,7 +23,7 @@ const questionSchema= new mongoose.Schema({
         required:true,
     },
     examples: [exampleSchema],
-    questionWriter:{
+    author:{
         type: mongoose.Types.ObjectId,
         ref: 'QuestionAdmin',
         required:true
