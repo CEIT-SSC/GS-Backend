@@ -40,7 +40,7 @@ const questionAdminSchema= new mongoose.Schema({
 questionAdminSchema.virtual('questions',{
     ref: 'Question',
     localField: '_id',
-    foreignField: 'questionWriter'
+    foreignField: 'author'
 });
 questionAdminSchema.methods.generateAuthToken=async function(){
     const admin=this;

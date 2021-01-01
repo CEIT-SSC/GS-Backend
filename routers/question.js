@@ -45,6 +45,7 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
             name: req.body.name,
             body: req.body.body,
             examples: JSON.parse(req.body.examples),
+            author: req.admin._id,
             testGeneratorPath: req.files.testGenerator[0].path,
             answerPath: req.files.answer[0].path
         })
