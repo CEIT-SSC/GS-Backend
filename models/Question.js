@@ -23,18 +23,10 @@ const questionSchema= new mongoose.Schema({
         required:true,
     },
     examples: [exampleSchema],
-    // examples:[
-    //     {
-    //         input:{
-    //             type: String,
-    //             required:true,
-    //         },
-    //         output:{
-    //             type: String,
-    //             required: true
-    //         }
-    //     }
-    // ],
+    questionWriter:{
+        type:String,
+        required:true
+    },
     testGeneratorPath:{
         type:String,
         required:true
