@@ -38,10 +38,11 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
         if(!req.files.testGenerator || !req.files.answer){
             throw new Error("both testGenerator and answer files should be send")
         }
+       
         //TODO :date should be handeled
         const question= new Question({
             _id:req.objectId,
-            forDate:new Date(),
+            forDate:new Date(Number(req.body.date)),
             name: req.body.name,
             body: req.body.body,
             examples: JSON.parse(req.body.examples),
