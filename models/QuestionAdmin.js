@@ -20,16 +20,16 @@ const questionAdminSchema= new mongoose.Schema({
             }
         }
     },
-    questions:[
-        {
-            question:{
-                type:mongoose.Types.ObjectId,
-                ref:'Question',
-                required:true
+    // questions:[
+    //     {
+    //         question:{
+    //             type:mongoose.Types.ObjectId,
+    //             ref:'Question',
+    //             required:true
 
-            }
-        }
-    ],
+    //         }
+    //     }
+    // ],
     tokens:[{
         token:{
             type:String,
@@ -37,7 +37,11 @@ const questionAdminSchema= new mongoose.Schema({
         }
     }]
 });
-
+questionAdminSchema.virtual('questions',{
+    ref: 'Question',
+    localField: '_id',
+    foreignField: 'questionWriter'
+});
 questionAdminSchema.methods.generateAuthToken=async function(){
     const admin=this;
     const token =jwt.sign({_id:admin._id.toString()}, config.JWT_SECRET);
@@ -65,7 +69,6 @@ questionAdminSchema.statics.findByCredentials = async (username, password)=>{
 questionAdminSchema.methods.toJSON=function(){
     const admin = this;
     const adminObj=admin.toObject();
-    delete adminObj._id;
     delete adminObj.__v;
     delete adminObj.tokens;
     delete adminObj.password;

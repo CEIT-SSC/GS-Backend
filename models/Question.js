@@ -24,7 +24,8 @@ const questionSchema= new mongoose.Schema({
     },
     examples: [exampleSchema],
     questionWriter:{
-        type:String,
+        type: mongoose.Types.ObjectId,
+        ref: 'QuestionAdmin',
         required:true
     },
     testGeneratorPath:{
