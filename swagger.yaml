@@ -105,8 +105,9 @@ paths:
           schema:
             type: "object"
             example:
-              username : "newAdminUsername"
-              password: "hashed password"
+              admin:
+                username : "newAdminUsername"
+              message: "question admin created successfully"
         "400":
           description: "error message will be displayed"
     get:
@@ -438,7 +439,7 @@ paths:
       tags:
       - "User"
       summary: "login into account"
-      description: "This can only be done by anyone."
+      description: "This can be done by anyone."
       operationId: "userlogin"
       produces:
       - "application/json"
@@ -467,6 +468,97 @@ paths:
               token: "the generated token"
         "400":
           description: "error will be returned, propably bad request"
+  /user/me/logout:
+    post:
+      tags:
+      - "User"
+      summary: "logout of account"
+      description: "This can only be done by user itself."
+      operationId: "userlogout"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        description: "user auth token"
+        type: "string"
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            example:
+              message: "logged out successfully"
+        "400":
+          description: "error will be returned, propably bad request"
+  /user/me/changepass:
+    post:
+      tags:
+      - "User"
+      summary: "change the password of user"
+      description: "This can only be done by user itself."
+      operationId: "userChangeOass"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        description: "user auth token"
+        type: "string"
+        required: true
+      - in : "body"
+        name : "body"
+        description: " the body of password"
+        schema:
+          type: "object"
+          example:
+            newPassword: "the new password of "
+        required: true
+        
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            example:
+              message: "logged out successfully"
+        "400":
+          description: "error will be returned, propably bad request"
+  /user/me/getquestion:
+    post:
+      tags:
+      - "User"
+      summary: "gets all of avaliable questions"
+      description: "This can only be done by user itself."
+      operationId: "userGetQeustion"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        description: "user auth token"
+        type: "string"
+        required: true
+      responses:
+        "200":
+          description: "returns all questions with state attached to it.state can be 'notTouched' or 'finished' or 'workingOn"
+          schema:
+            type: "object"
+            example:
+             -  _id: "the id used in db"
+                forDate: "the for date"
+                name: "name of the question"
+                body: "the body of question"
+                examples:
+                  - _id: "id of example"
+                    input: "example of input"
+                    output: "example of output"
+                testGeneratorPath: "the path of testgenerator file"
+                answerPath: "the path of answer file"
+                state: "the state of questions ."
+        "500":
+          description: "error will be returned"
   /question/:
     post:
       tags:
@@ -481,7 +573,7 @@ paths:
       parameters:
       - name: "forDate"
         in: "formData"
-        description: "the specified date in string"
+        description: "timestamp of the date"
         required: true
         type: "string"
       - name: "name"

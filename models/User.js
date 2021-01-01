@@ -60,8 +60,7 @@ const userSchema= new mongoose.Schema({
             },
             state:{
                 type: String, 
-                enum: ['finished' , 'workingOn' , 'notTouched'],
-                default: 'notTouched',
+                enum: ['finished' , 'workingOn'],
                 require: true
             }
         }
