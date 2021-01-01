@@ -106,6 +106,7 @@ paths:
             type: "object"
             example:
               admin:
+                _id: "question admin's id"
                 username : "newAdminUsername"
               message: "question admin created successfully"
         "400":
@@ -126,9 +127,11 @@ paths:
         "200":
           description: "returns all admins"
           schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/QuestionAdmin"
+            type: "object"
+            example:
+              -
+                _id: "question admin's id"
+                username : "newAdminUsername"
 
   /questionadmin/{username}:
     get:
@@ -154,7 +157,10 @@ paths:
         "200":
           description: "successful operation"
           schema:
-            $ref: "#/definitions/QuestionAdmin"
+            type: "object"
+            example:
+                _id: "question admin's id"
+                username : "newAdminUsername"
         "500":
           description: "error message will be returned"
       # security:
@@ -188,6 +194,12 @@ paths:
         required: true
         type: "string"
       responses:
+        "200":
+          description: "returns good message or sth"
+          schema:
+            type: "object"
+            example:
+              message: "question admin updated successfully"
         "500":
           description: "error message will be returned"
 
@@ -213,7 +225,12 @@ paths:
         "200":
           description: "successfully removed"
           schema:
-            $ref: "#/definitions/QuestionAdmin"
+            type: "object"
+            example: 
+              questionAdmin :
+                _id: "id of question admin"
+                username: "the username of question admin"
+              message : "admin successfully deleted"
           
         "500":
           description: "error message will be returned"
@@ -245,9 +262,10 @@ paths:
           schema:
             type: "object"
             example :
-            - username: "admin username"
-              password: "hashed password"
-            - token: "token"
+             questionAdmin:
+              _id: "id of question admin"
+              username: "admin username"
+             token: "token"
         "400":
           description: "error will be returned"
   /questionadmin/me/logout:

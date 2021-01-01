@@ -18,7 +18,8 @@ router.post('/',authenticateSuperUser,async (req,res)=>{
         await questionAdmin.save().then(()=>{
             logger.info("new question admin created")
         })
-        res.status(201).send(questionAdmin);
+        res.status(201).send({questionAdmin,
+            message: "question admin created successfully"});
     }catch(err){
         res.status(400).send({error:err.message});
     }
@@ -67,6 +68,7 @@ router.delete("/:username",authenticateSuperUser,async (req,res)=>{
                     logger.info("question admin successfully removed")
                     res.status(200).send({
                         questionAdmin,
+                        message: "admin successfully deleted"
                     })
                 });
     }catch(err){
@@ -95,7 +97,9 @@ router.patch("/:username", authenticateSuperUser,async(req,res)=>{
             logger.info("updated successfully")
         })
 
-        res.send(questionAdmin);
+        res.send({
+            message: "question admin updated successfully"
+        });
 
     }catch(err){
         res.status(500).send({
