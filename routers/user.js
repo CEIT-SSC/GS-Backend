@@ -4,6 +4,7 @@ const {authenticateSuperUser} = require("../middlewares/superUserAuth");
 const logger = require("../utils/logger");
 const { authenticateAdmin } = require("../middlewares/questionAdminAuth");
 const { authenticateUser } = require("../middlewares/userAuth");
+const { runScript } = require ("../utils/utils");
 const Question = require("../models/Question");
 
 router.get("/",authenticateSuperUser,async(req,res)=>{
@@ -171,6 +172,39 @@ router.get("/me/getquestion/", authenticateUser, async(req,res)=>{
     }catch(err){
         res.status(500).send({
             error:err.message
+        })
+    }
+});
+router.get("/me/question/:id", authenticateUser,async (req,res)=>{
+    try{
+        const question = await Question.findOne({
+            _id:req.params.id
+        });
+        if( ! question ) throw new Error(" couldn't find question with entered id");
+        
+        const user = req.user;
+        const studentNumber = user.studentNumber;
+        const testGeneratorPath = question.testGeneratorPath;
+        const answerPath = question.answerPath;
+        const generatedTestCase = runScript(testGeneratorPath,studentNumber);
+        const excpectedAnswer = runScript(answerPath, studentNumber); // NOT SURE
+        if (!generatedTestCase) throw new Error ("couldn't create test case");
+        
+        user.testCases = user.testCases.concat({
+            forQuestion: req.params.id,
+            input: generatedTestCase,
+            // the output should be changed
+            output: excpectedAnswer
+        });
+        await user.save();
+        res.status(200).send({
+            question,
+            testCases: generatedTestCase
+        });
+    }catch(err){
+        logger.error(err);
+        res.send({
+            message:error
         })
     }
 })

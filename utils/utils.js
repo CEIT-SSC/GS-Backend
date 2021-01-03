@@ -25,3 +25,9 @@ function runScript(testGeneratorPath, studentNumber){
         }
     });
 }
+
+
+
+module.exports = {
+    runScript
+}
