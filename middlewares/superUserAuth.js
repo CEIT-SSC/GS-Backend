@@ -21,7 +21,7 @@ async function authenticateSuperUser(req,res,next){
         next();
     }else{
         res.status(401).send({
-            error:'Please authenticate as superuser'
+            error:" you don't have premission "
         });
     }
 }
