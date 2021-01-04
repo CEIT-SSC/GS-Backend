@@ -1,9 +1,8 @@
 const { spawnSync } = require ("child_process");
 const { stderr } = require("process");
 const config = require ("./config");
-const logger = require ('./logger')
-const util = require ('util');
-execFile = util.promisify(require("child_process").execFile);
+const logger = require ('./logger');
+const fs = require ("fs");
 async function runScript(testGeneratorPath, studentNumber){
 
     const script= await spawnSync(`sh`,['./testcase.sh',testGeneratorPath,studentNumber]);
@@ -37,8 +36,12 @@ async function runScript(testGeneratorPath, studentNumber){
     // });
 }
 
+async function saveTestCase(questionId,data){
+    await fs.writeFileSync(`./data/questions/${questionId}/saveTestCase.txt`,data);
+}
 
 
 module.exports = {
-    runScript
+    runScript,
+    saveTestCase
 }

@@ -4,7 +4,7 @@ const {authenticateSuperUser} = require("../middlewares/superUserAuth");
 const logger = require("../utils/logger");
 const { authenticateAdmin } = require("../middlewares/questionAdminAuth");
 const { authenticateUser } = require("../middlewares/userAuth");
-const { runScript } = require ("../utils/utils");
+const { runScript , saveTestCase } = require ("../utils/utils");
 const Question = require("../models/Question");
 
 router.get("/",authenticateSuperUser,async(req,res)=>{
@@ -196,6 +196,9 @@ router.get("/me/getquestion/:id", authenticateUser,async (req,res)=>{
             output: excpectedAnswer
         });
         await user.save();
+
+        await saveTestCase(req.params.id,generatedTestCase);
+
         res.status(200).send({
             question,
             testCases: generatedTestCase
