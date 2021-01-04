@@ -167,7 +167,8 @@ router.post("/submit",authenticateUser,submittion.single('code'),async(req,res)=
             user.codes = user.codes.concat({
                 forQuestion: questionId,
                 codePath: codePath,
-                state: "finished"
+                state: "finished",
+                date: Date.now()
             });
             await user.save();
             res.status(200).send({message:"you solved it :)"})

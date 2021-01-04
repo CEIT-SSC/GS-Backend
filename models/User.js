@@ -61,6 +61,10 @@ const userSchema= new mongoose.Schema({
             state:{
                 type: String, 
                 require: true
+            },
+            date:{
+                type: Date,
+                required:true
             }
         }
     ],
