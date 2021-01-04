@@ -189,7 +189,7 @@ router.get("/me/getquestion/:id", authenticateUser,async (req,res)=>{
         if(savedTestCase){
             res.status(200).send({
                 question,
-                testCases: saveTestCase.input
+                testCases: savedTestCase.input
             });
 
         }else{

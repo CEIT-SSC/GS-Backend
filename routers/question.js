@@ -10,9 +10,9 @@ const { uploadTestCase,
       submittion,
         patchHandler} = require ("../middlewares/upload");
 
-const {authGetAccess} = require ("../middlewares/questionAccessAuth");
+// const {authGetAccess} = require ("../middlewares/questionAccessAuth");
 const { authenticateUser } = require("../middlewares/userAuth");
-const { runScript } = require("../utils/utils");
+const { readOutput } = require("../utils/utils");
 
 const fieldstoUpload=[
     {name:'answer', maxCount:1},
@@ -151,15 +151,20 @@ router.delete("/:id",authenticateAdmin,async (req,res)=>{
         });
     }
 });
-
+const submitFields=[
+    {name:'code', maxCount:1},
+    {name:'output', maxCount:1}
+]
 //submit question
-router.post("/submit",authenticateUser,submittion.single('code'),async(req,res)=>{
+router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req,res)=>{
     try{
         const user= req.user;
         const questionId= req.body.questionID;
         const codePath = `./data/user-submits/${user.studentNumber}/
-            ${questionId}/${req.file.originalname}`;
-        const result = await runScript(codePath,user.studentNumber);
+            ${questionId}/${req.files.code[0].originalname}`;
+        // const result = await runScript(codePath,user.studentNumber);
+        console.log(req.files)
+        // const result = readOutput(req.files.output[0]);
         if(!result) throw new Error("couldn't run uploaded code ");
         const questionData = user.testCases.find(obj=> obj.forQuestion==questionId);
 
@@ -167,7 +172,6 @@ router.post("/submit",authenticateUser,submittion.single('code'),async(req,res)=
             user.codes = user.codes.concat({
                 forQuestion: questionId,
                 codePath: codePath,
-                state: "finished",
                 date: Date.now()
             });
             await user.save();

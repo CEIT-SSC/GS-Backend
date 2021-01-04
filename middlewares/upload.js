@@ -84,12 +84,12 @@ function submitFilter(req,file,cb){
             cb(null,true);
         }
     }
-
+    cb(null,true);
 }
 
 const submittion= multer({
     storage:submitStorage,
-    fileFilter: submitFilter
+    // fileFilter: submitFilter
 });
 const patchHandler = multer({
     storage:patchStorage
