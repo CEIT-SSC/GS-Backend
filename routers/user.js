@@ -181,28 +181,42 @@ router.get("/me/getquestion/:id", authenticateUser,async (req,res)=>{
             _id:req.params.id
         });
         if( ! question ) throw new Error(" couldn't find question with entered id");
-        
+
+
         const user = req.user;
-        const studentNumber = user.studentNumber;
-        const testGeneratorPath = question.testGeneratorPath;
-        const answerPath = question.answerPath;
-        const generatedTestCase = await runScript(testGeneratorPath,studentNumber);
-        const excpectedAnswer = await runScript(answerPath, studentNumber); // NOT SURE
-        if (!generatedTestCase) throw new Error ("couldn't create test case");
-        user.testCases = user.testCases.concat({
-            forQuestion: req.params.id,
-            input: generatedTestCase,
-            // the output should be changed
-            correctOutput: excpectedAnswer
-        });
-        await user.save();
+        const savedTestCase = user.testCases.find(obj => obj.forQuestion == req.params.id);
+        if(savedTestCase){
+            console.log("tss saved")
+            res.status(200).send({
+                question,
+                testCases: saveTestCase.input
+            });
 
-        // await saveTestCase(req.params.id,generatedTestCase); //QUSTION ? IS IT NEEDED??
+        }else{
 
-        res.status(200).send({
-            question,
-            testCases: generatedTestCase
-        });
+            const studentNumber = user.studentNumber;
+            const testGeneratorPath = question.testGeneratorPath;
+            const answerPath = question.answerPath;
+            const generatedTestCase = await runScript(testGeneratorPath,studentNumber);
+            const excpectedAnswer = await runScript(answerPath, studentNumber); // NOT SURE
+            if (!generatedTestCase) throw new Error ("couldn't create test case");
+            user.testCases = user.testCases.concat({
+                forQuestion: req.params.id,
+                input: generatedTestCase,
+                // the output should be changed
+                correctOutput: excpectedAnswer
+            });
+            await user.save();
+    
+            // await saveTestCase(req.params.id,generatedTestCase); //QUSTION ? IS IT NEEDED??
+    
+            res.status(200).send({
+                question,
+                testCases: generatedTestCase
+            });
+        }
+
+
     }catch(err){
         logger.error(err);
         res.send({
