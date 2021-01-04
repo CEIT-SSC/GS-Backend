@@ -106,6 +106,7 @@ router.patch("/:studentNumber",authenticateSuperUser,async(req,res)=>{
 //login 
 router.post("/login",async(req,res)=>{
     try{
+        if(!req.body.studentNumber || !req.body.password) throw new Error("You should complete all fields");
         const user = await User.findByCredentials(req.body.studentNumber,req.body.password);
         const token = await user.generateAuthToken();
 
@@ -159,8 +160,9 @@ router.get("/me/getquestion/", authenticateUser, async(req,res)=>{
         .sort({forDate:'descending'}).then(questions=>{
             for(const question of questions){
                 question.set('state','notTouched',{strict:false});
-                for( let code in req.user.codes){
-                    if (code.forQuestion === question._id){
+                for( let code of req.user.codes){
+                    if (String(code.forQuestion) === String(question._id)){
+                        
                         question.set('state',code.state,{strict:false});
                     }
                 }
@@ -186,7 +188,6 @@ router.get("/me/getquestion/:id", authenticateUser,async (req,res)=>{
         const user = req.user;
         const savedTestCase = user.testCases.find(obj => obj.forQuestion == req.params.id);
         if(savedTestCase){
-            console.log("tss saved")
             res.status(200).send({
                 question,
                 testCases: saveTestCase.input
