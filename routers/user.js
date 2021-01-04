@@ -175,7 +175,7 @@ router.get("/me/getquestion/", authenticateUser, async(req,res)=>{
         })
     }
 });
-router.get("/me/question/:id", authenticateUser,async (req,res)=>{
+router.get("/me/getquestion/:id", authenticateUser,async (req,res)=>{
     try{
         const question = await Question.findOne({
             _id:req.params.id
@@ -186,10 +186,9 @@ router.get("/me/question/:id", authenticateUser,async (req,res)=>{
         const studentNumber = user.studentNumber;
         const testGeneratorPath = question.testGeneratorPath;
         const answerPath = question.answerPath;
-        const generatedTestCase = runScript(testGeneratorPath,studentNumber);
-        const excpectedAnswer = runScript(answerPath, studentNumber); // NOT SURE
+        const generatedTestCase = await runScript(testGeneratorPath,studentNumber);
+        const excpectedAnswer = await runScript(answerPath, studentNumber); // NOT SURE
         if (!generatedTestCase) throw new Error ("couldn't create test case");
-        
         user.testCases = user.testCases.concat({
             forQuestion: req.params.id,
             input: generatedTestCase,
@@ -204,7 +203,7 @@ router.get("/me/question/:id", authenticateUser,async (req,res)=>{
     }catch(err){
         logger.error(err);
         res.send({
-            message:error
+            error :err
         })
     }
 })

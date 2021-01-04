@@ -60,7 +60,6 @@ const userSchema= new mongoose.Schema({
             },
             state:{
                 type: String, 
-                enum: ['finished' , 'workingOn'],
                 require: true
             }
         }
