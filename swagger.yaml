@@ -662,6 +662,11 @@ paths:
         required: true
         type: "file"
         description: "the file of answer . notice it can be only one file"
+      - name: "score"
+        in: "formData"
+        required: true
+        description: "the score of question"
+        type: "number"
       - name: "Authorization"
         in: "header"
         required: true
@@ -698,7 +703,7 @@ paths:
         - "Question"
       description: "submits the answer"
       consumes:
-       - "multipart/formdata"
+       - "multipart/form-data"
       produces:
         - "application/json"
       parameters:
@@ -781,6 +786,7 @@ paths:
                     output: "example of output"
                 testGeneratorPath: "the path of testgenerator file"
                 answerPath: "the path of answer file"
+                score: "score of question"
               message : "successfully removed"
     patch:
       tags:
@@ -849,6 +855,7 @@ paths:
                     output: "example of output"
                 testGeneratorPath: "the path of testgenerator file"
                 answerPath: "the path of answer file"
+                score: "score of question"
               message : "successfully updated"
 
         "500":
@@ -1036,4 +1043,7 @@ definitions:
       answerPath:
         type: "string"
         example: "the path of answer file"
+      score: 
+        type: "number"
+        example: "score (as number)"
 

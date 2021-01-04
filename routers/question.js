@@ -33,7 +33,7 @@ const removeDir=async (id,folder)=>{
 //create question
 router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fieldstoUpload) , async (req,res)=>{
     try{
-        if(!req.body.name || !req.body.body){
+        if(!req.body.name || !req.body.body ||! req.body.score){
             throw new Error("please complete all fields");
         }   
         if(!req.files.testGenerator || !req.files.answer){
@@ -49,7 +49,9 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
             examples: JSON.parse(req.body.examples),
             author: req.admin._id,
             testGeneratorPath: req.files.testGenerator[0].path,
-            answerPath: req.files.answer[0].path
+            answerPath: req.files.answer[0].path,
+            score:Number(req.body.score)
+            
         })
         //bug in deleting folders in unexpected fields
         
@@ -117,7 +119,8 @@ router.patch("/:id", authenticateAdmin, patchHandler.fields(fieldstoUpload), asy
     await question.save().then(()=>{
         logger.info("question updated successfully");
     })
-    res.status(200).send({updatedQuestion,
+    res.status(200).send({
+        updatedQuestion:question,
         message:"successfully updated"});
     }catch(err){
         logger.error({

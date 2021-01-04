@@ -35,6 +35,10 @@ const questionSchema= new mongoose.Schema({
     answerPath:{
         type: String,
         required:true
+    },
+    score:{
+        type: Number,
+        required:true
     }
 });
 // TODO toJson 
