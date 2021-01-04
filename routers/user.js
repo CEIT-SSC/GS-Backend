@@ -162,8 +162,7 @@ router.get("/me/getquestion/", authenticateUser, async(req,res)=>{
                 question.set('state','notTouched',{strict:false});
                 for( let code of req.user.codes){
                     if (String(code.forQuestion) === String(question._id)){
-                        
-                        question.set('state',code.state,{strict:false});
+                        question.set('state','finished',{strict:false});
                     }
                 }
             }

@@ -58,10 +58,6 @@ const userSchema= new mongoose.Schema({
                 type: String,
                 require:true
             },
-            state:{
-                type: String, 
-                require: true
-            },
             date:{
                 type: Date,
                 required:true
