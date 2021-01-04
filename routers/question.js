@@ -12,6 +12,7 @@ const { uploadTestCase,
 
 const {authGetAccess} = require ("../middlewares/questionAccessAuth");
 const { authenticateUser } = require("../middlewares/userAuth");
+const { runScript } = require("../utils/utils");
 
 const fieldstoUpload=[
     {name:'answer', maxCount:1},
@@ -66,7 +67,7 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
 
 });
 //get questions
-router.get("/", authGetAccess, async(req,res)=>{
+router.get("/", authenticateAdmin, async(req,res)=>{
     try{
         //forDates should be handled
         const questions = await Question.find({});
@@ -79,7 +80,7 @@ router.get("/", authGetAccess, async(req,res)=>{
     }
 });
 //get specific question
-router.get("/:id", authGetAccess, async(req,res)=>{
+router.get("/:id", authenticateAdmin, async(req,res)=>{
     try{
         const question = await Question.findById({
             _id:req.params.id
@@ -148,16 +149,36 @@ router.delete("/:id",authenticateAdmin,async (req,res)=>{
     }
 });
 
-//submit questioin
+//submit question
 router.post("/submit",authenticateUser,submittion.single('code'),async(req,res)=>{
     try{
-            // possibly doing other things in here
+        const user= req.user;
+        const questionId= req.body.questionID;
+        const codePath = `./data/user-submits/${user.studentNumber}/
+            ${questionId}/${req.file.originalname}`;
+        const result = await runScript(codePath,user.studentNumber);
+        if(!result) throw new Error("couldn't run uploaded code ");
+        const questionData = user.testCases.find(obj=> obj.forQuestion==questionId);
 
-        res.status(200).send(" file submitted successfully")
+        if(questionData.correctOutput === (result)){
+            user.codes = user.codes.concat({
+                forQuestion: questionId,
+                codePath: codePath,
+                state: "finished"
+            });
+            await user.save();
+            res.status(200).send({message:"you solved it :)"})
+        }else{
+            res.status(200).send({
+                message: "code didn't produce correctOutput . try harder"
+            })
+        }
+
+        // possibly doing other things in here
     }catch(err){
         removeDir("user-submits",`${req.user.studentNumber}/${req.body.questionID}`);
         logger.error(err);
-        err.send(
+        res.send(
             err
         )
     }

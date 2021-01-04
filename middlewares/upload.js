@@ -54,8 +54,8 @@ const submitStorage= multer.diskStorage({
         cb(null,`./data/user-submits/${id}/${questionId}`);
     },
     filename: function( req, file, cb) {
-        const ext=path.extname(file.originalname);
-        cb(null, file.originalname+ext);
+
+        cb(null, file.originalname);
     }
 });
 const patchStorage= multer.diskStorage({
