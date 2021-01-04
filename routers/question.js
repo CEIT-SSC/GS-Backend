@@ -169,8 +169,8 @@ router.post("/submit",authenticateUser,submittion.single('code'),async(req,res)=
             await user.save();
             res.status(200).send({message:"you solved it :)"})
         }else{
-            res.status(200).send({
-                message: "code didn't produce correctOutput . try harder"
+            res.status(406).send({
+                message: "code didn't produce correct output . try harder"
             })
         }
 
@@ -178,8 +178,8 @@ router.post("/submit",authenticateUser,submittion.single('code'),async(req,res)=
     }catch(err){
         removeDir("user-submits",`${req.user.studentNumber}/${req.body.questionID}`);
         logger.error(err);
-        res.send(
-            err
+        res.status(500).send(
+           { message:err.message}
         )
     }
 });

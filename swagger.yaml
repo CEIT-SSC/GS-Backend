@@ -692,6 +692,39 @@ paths:
           description: "return the list of all questions"
           schema:
             $ref: "#/definitions/Question"
+  /question/submit:
+    post:
+      tags:
+        - "Question"
+      description: "submits the answer"
+      consumes:
+       - "multipart/formdata"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "questionID"
+          in : "formData"
+          description: "the id of the question"
+          type: "string"
+        - name: "code" 
+          in: "formData"
+          type: "file"
+          description: "submitting code "
+      responses:
+        "200":
+          description: "returns something good"
+          schema:
+            type: "object"
+            example :
+              message: "you solved it :)"
+        "406":
+          description: "shows that code didn't word"
+          schema:
+            type: "object"
+            example: 
+              message: "code didn't produce correct output . try harder"
+        "500":
+          description: "sth bad happend, error will be send"
   /question/{id}:
     get:
       tags:
