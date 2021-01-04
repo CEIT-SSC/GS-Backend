@@ -80,7 +80,7 @@ userSchema.methods.toJSON=function(){
     delete userObj.password;
     delete userObj._id;
     delete userObj.__v;
-    delete userObj.testCases.correctOutput;
+    userObj.testCases.forEach(obj=> delete obj.correctOutput);
     return userObj;
 }
 //TODO : add jwt authentication
