@@ -453,7 +453,7 @@ paths:
         "500":
           description: "error will be returned"
   /user/login:
-    get:
+    post:
       tags:
       - "User"
       summary: "login into account"
@@ -575,6 +575,49 @@ paths:
                 testGeneratorPath: "the path of testgenerator file"
                 answerPath: "the path of answer file"
                 state: "the state of questions ."
+        "500":
+          description: "error will be returned"
+
+  /user/me/getquestion/{id}:
+    get:
+      tags:
+      - "User"
+      summary: "gets specified question"
+      description: "This can only be done by user itself."
+      operationId: "userGetQeustionById"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        description: "user auth token"
+        type: "string"
+        required: true
+      - in: "path"
+        name: "id"
+        description: "the id of question "
+        type: "string"
+        required: true
+      responses:
+        "200":
+          description: "returns all questions with state attached to it.state can be 'notTouched' or 'finished' or 'workingOn"
+          schema:
+            type: "object"
+            example:
+             -  question: 
+                  _id: "the id used in db"
+                  forDate: "the for date"
+                  name: "name of the question"
+                  body: "the body of question"
+                  examples:
+                    - _id: "id of example"
+                      input: "example of input"
+                      output: "example of output"
+                  author: "the id of question author"
+                  testGeneratorPath: "the path of testgenerator file"
+                  answerPath: "the path of answer file"
+                testCase: "string representing testCases"
+                
         "500":
           description: "error will be returned"
   /question/:
