@@ -193,11 +193,11 @@ router.get("/me/getquestion/:id", authenticateUser,async (req,res)=>{
             forQuestion: req.params.id,
             input: generatedTestCase,
             // the output should be changed
-            output: excpectedAnswer
+            correctOutput: excpectedAnswer
         });
         await user.save();
 
-        await saveTestCase(req.params.id,generatedTestCase);
+        // await saveTestCase(req.params.id,generatedTestCase); //QUSTION ? IS IT NEEDED??
 
         res.status(200).send({
             question,
