@@ -45,8 +45,11 @@ const questionSchema= new mongoose.Schema({
 questionSchema.methods.toJSON=function(){
     const question = this;
     const questionObj=question.toObject();
-    questionObj.testGeneratorPath= "./"+questionObj.testGeneratorPath;
-    questionObj.answerPath= "./"+questionObj.answerPath;
+    // questionObj.testGeneratorPath= "./"+questionObj.testGeneratorPath;
+    // questionObj.answerPath= "./"+questionObj.answerPath;
+    delete questionObj.testGeneratorPath;
+    delete questionObj.answerPath;
+    delete questionObj.author;
     delete questionObj.__v;
     // delete questionObj._id;
     return questionObj;
