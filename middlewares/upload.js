@@ -75,13 +75,25 @@ const patchStorage= multer.diskStorage({
         const ext=path.extname(file.originalname);
         cb(null, `${file.fieldname}_${req.params.id}`+ext);
     }
-})
+});
+function submitFilter(req,file,cb){
+    if(file.fieldname === 'output'){
+        if(!(path.extname(file.originalname)==='txt')){
+            cb(new Error ('output should be in .txt tile'));
+        }else {
+            cb(null,true);
+        }
+    }
+
+}
+
 const submittion= multer({
-    storage:submitStorage
-})
+    storage:submitStorage,
+    fileFilter: submitFilter
+});
 const patchHandler = multer({
     storage:patchStorage
-})
+});
 module.exports={
     uploadTestCase,
     generateIdAndDir,
