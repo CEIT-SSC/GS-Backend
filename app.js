@@ -22,7 +22,7 @@ app.use('/questionadmin',require("./routers/questionAdmin"));
 app.use('/user',require("./routers/user"));
 app.use('/question', require("./routers/question"));
 app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swaggerSetUp));
-
+app.use('/scoreboard', require("./routers/scoreboard"));
 app.use(unknownEndpointHandler);
 app.use(errorHandler);
 module.exports = app;
