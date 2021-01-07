@@ -158,13 +158,19 @@ const submitFields=[
 //submit question
 router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req,res)=>{
     try{
+        if(!req.body.questionID || !req.files.output || !req.files.code){
+            res.status(400).send({
+                message: "please complete all fields"
+            });
+            return;
+        }
         const user= req.user;
         const questionId= req.body.questionID;
         const codePath = `./data/user-submits/${user.studentNumber}/
             ${questionId}/${req.files.code[0].originalname}`;
         // const result = await runScript(codePath,user.studentNumber);
-        console.log(req.files)
-        // const result = readOutput(req.files.output[0]);
+        console.log(req.files.output)
+        const result = readOutput(req.files.output[0].path);
         if(!result) throw new Error("couldn't run uploaded code ");
         const questionData = user.testCases.find(obj=> obj.forQuestion==questionId);
 
@@ -177,6 +183,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
             await user.save();
             res.status(200).send({message:"you solved it :)"})
         }else{
+            removeDir("user-submits",`${req.user.studentNumber}/${req.body.questionID}`);
             res.status(406).send({
                 message: "code didn't produce correct output . try harder"
             })

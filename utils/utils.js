@@ -13,8 +13,11 @@ async function runScript(scriptPath, studentNumber){
     }
 }
 
-function readOutput(file){
-    return Buffer.from(file.buffer).toString('utf-8');
+function readOutput(filePath){
+
+    const output = fs.readFileSync(filePath, 'utf-8');
+    console.log(output);
+    return output;
 }
 
 
