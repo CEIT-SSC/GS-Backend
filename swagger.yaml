@@ -15,6 +15,8 @@ tags:
   description: "Operations about user"
 - name: "Question"
   description: "Question and testcases endpoint"
+- name: "Scoreboard"
+  description: "scoreboard of all students"
 
 schemes:
 # - "https"
@@ -860,7 +862,26 @@ paths:
 
         "500":
           description: "error will be returned"
-          
+  /scoreboard/ :
+    get:
+      tags:
+        - "Scoreboard"
+      summary: "getting the scores of all users"
+      description : "returns all of users rank based on most scores and penalties . everyone can access to this page"
+      produces: 
+      - "application/json"
+      responses:
+        "200": 
+          description: "returns list of info objects"
+          schema: 
+            example:
+              - studentNumber: "studentNumber of user"
+                penalty : "submittedDate - forDateOfQeustion"
+                score: "the score of user"
+                
+                
+      
+      
 
   # /user/login:
   #   get:

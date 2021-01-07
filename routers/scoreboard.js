@@ -9,14 +9,7 @@ router.get("/",async(req,res)=>{
             .then(allUsers => {
                 return allUsers;
             });
-            
-        // const allUsers = await User.find().populate({
-        //     path: "codes.forQuestion",
-        //     model: 'Question',
-        // },(err,result)=>{
-        //     console.log(result);
-        // })
-        // console.log(allUsers)
+        
 
 
         let allUserData = allUsers.map(user=>{
@@ -42,7 +35,7 @@ router.get("/",async(req,res)=>{
             }else return 1;
         });
         // console.log(allUsers);
-        res.send(allUserData)
+        res.status(200).send(allUserData)
     }catch(error){
         res.status(500).send({
             message:error.message
