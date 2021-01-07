@@ -16,7 +16,6 @@ router.get("/",async(req,res)=>{
             let penalty=0;
             let userScore=0;
             for(let code of user.codes){
-                console.log(code)
                 const forDate= code.forQuestion.forDate;
                 const submittedDate = code.date;
                 penalty = submittedDate-forDate;

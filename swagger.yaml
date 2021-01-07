@@ -703,7 +703,8 @@ paths:
     post:
       tags:
         - "Question"
-      description: "submits the answer"
+      summary : "submits the answer"
+      description: "can only be done by user"
       consumes:
        - "multipart/form-data"
       produces:
@@ -713,10 +714,21 @@ paths:
           in : "formData"
           description: "the id of the question"
           type: "string"
+          required: true
         - name: "code" 
           in: "formData"
           type: "file"
           description: "submitting code "
+          required: true
+        - name: "output"
+          in: "formData"
+          type: "file"
+          description: "text file of output"
+          required: true
+        - name: "Authorization"
+          in: "header"
+          description: "user auth"
+          type: "string"
       responses:
         "200":
           description: "returns something good"
@@ -729,7 +741,7 @@ paths:
           schema:
             type: "object"
             example: 
-              message: "code didn't produce correct output . try harder"
+              message: "output was wrong. try harder"
         "500":
           description: "sth bad happend, error will be send"
   /question/{id}:
@@ -862,6 +874,8 @@ paths:
 
         "500":
           description: "error will be returned"
+
+    
   /scoreboard/ :
     get:
       tags:
