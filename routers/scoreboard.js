@@ -4,18 +4,30 @@ const User = require ("../models/User");
 
 router.get("/",async(req,res)=>{
     try{
-        const allUsers = await User.find();
+        const allUsers= await User.find()
+            .populate('codes.forQuestion')
+            .then(allUsers => {
+                return allUsers;
+            });
+            
+        // const allUsers = await User.find().populate({
+        //     path: "codes.forQuestion",
+        //     model: 'Question',
+        // },(err,result)=>{
+        //     console.log(result);
+        // })
+        // console.log(allUsers)
+
+
         let allUserData = allUsers.map(user=>{
             let penalty=0;
             let userScore=0;
             for(let code of user.codes){
-                code.populate('forQuestion',{forDate:1,score:1}).then(code=>{
-                    const forDate= code.forQuestion.forDate;
-                    const submittedDate = code.date;
-                    penalty = submittedDate-forDate;
-                    userScore+=code.forQuestion.score;
-                });
-                
+                console.log(code)
+                const forDate= code.forQuestion.forDate;
+                const submittedDate = code.date;
+                penalty = submittedDate-forDate;
+                userScore+=code.forQuestion.score;
             }
             return {
                 studentNumber: user.studentNumber,
