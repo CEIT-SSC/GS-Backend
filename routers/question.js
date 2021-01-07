@@ -164,6 +164,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
             });
             return;
         }
+
         const user= req.user;
         const questionId= req.body.questionID;
         const codePath = `./data/user-submits/${user.studentNumber}/
@@ -182,7 +183,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         }else{
             await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
             res.status(406).send({
-                message: "code didn't produce correct output . try harder"
+                message: "output is wrong . try again "
             })
         }
 

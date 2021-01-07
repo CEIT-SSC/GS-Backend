@@ -42,15 +42,16 @@ const submitStorage= multer.diskStorage({
         const id =req.user.studentNumber;
         const questionId = req.body.questionID;
         if(!fs.existsSync(`./data/user-submits/${id}/${questionId}`)){
-            fs.mkdir(`./data/user-submits/${id}/${questionId}`,{recursive:true},(err)=>{
-                if(err){
-                    logger.error(err);
-                    cb(new Error(err.message));
-                }else{
-                    logger.info("directory created successfully");
-                    cb(null,`./data/user-submits/${id}/${questionId}`);
-                }
-            });
+            fs.mkdirSync(`./data/user-submits/${id}/${questionId}`,{recursive:true});
+            // ,(err)=>{
+            //     if(err){
+            //         logger.error(err);
+            //         cb(new Error(err.message));
+            //     }else{
+            //         logger.info("directory created successfully");
+            //         cb(null,`./data/user-submits/${id}/${questionId}`);
+            //     }
+            // });
         }
         cb(null,`./data/user-submits/${id}/${questionId}`);
     },
