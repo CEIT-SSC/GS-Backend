@@ -169,12 +169,12 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         const codePath = `./data/user-submits/${user.studentNumber}/
             ${questionId}/${req.files.code[0].originalname}`;
         // const result = await runScript(codePath,user.studentNumber);
-        console.log(req.files.output)
         const result = readOutput(req.files.output[0].path);
-        if(!result) throw new Error("couldn't run uploaded code ");
-        const questionData = user.testCases.find(obj=> obj.forQuestion==questionId);
-
-        if(questionData.correctOutput === (result)){
+        if(!result) throw new Error("couldn't read output");
+        const questionData = user.testCases.find(obj=> String(obj.forQuestion)===String(questionId));
+        console.log(String(questionData.correctOutput))
+        console.log(result)
+        if(String(questionData.correctOutput) === String(result)){
             user.codes = user.codes.concat({
                 forQuestion: questionId,
                 codePath: codePath,
@@ -183,7 +183,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
             await user.save();
             res.status(200).send({message:"you solved it :)"})
         }else{
-            removeDir("user-submits",`${req.user.studentNumber}/${req.body.questionID}`);
+            await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
             res.status(406).send({
                 message: "code didn't produce correct output . try harder"
             })
@@ -191,7 +191,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
 
         // possibly doing other things in here
     }catch(err){
-        removeDir("user-submits",`${req.user.studentNumber}/${req.body.questionID}`);
+        await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
         logger.error(err);
         res.status(500).send(
            { message:err.message}
