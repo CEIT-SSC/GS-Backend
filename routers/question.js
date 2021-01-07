@@ -33,7 +33,7 @@ const removeDir=async (id,folder)=>{
 //create question
 router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fieldstoUpload) , async (req,res)=>{
     try{
-        if(!req.body.name || !req.body.body ||! req.body.score){
+        if(!req.body.name || !req.body.body ||! req.body.score || !req.body.date){
             throw new Error("please complete all fields");
         }   
         if(!req.files.testGenerator || !req.files.answer){

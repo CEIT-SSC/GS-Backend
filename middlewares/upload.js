@@ -48,6 +48,7 @@ const submitStorage= multer.diskStorage({
                     cb(new Error(err.message));
                 }else{
                     logger.info("directory created successfully");
+                    cb(null,`./data/user-submits/${id}/${questionId}`);
                 }
             });
         }
