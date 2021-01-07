@@ -204,7 +204,7 @@ router.get("/me/getquestion/:id", authenticateUser,async (req,res)=>{
                 forQuestion: req.params.id,
                 input: generatedTestCase,
                 // the output should be changed
-                correctOutput: excpectedAnswer
+                correctOutput: excpectedAnswer.trim()
             });
             await user.save();
     

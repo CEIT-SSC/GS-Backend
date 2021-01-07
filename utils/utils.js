@@ -16,7 +16,6 @@ async function runScript(scriptPath, studentNumber){
 function readOutput(filePath){
 
     const output = fs.readFileSync(filePath, 'utf-8');
-    console.log(output);
     return output;
 }
 

@@ -62,7 +62,7 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
         await question.save();
         res.status(201).send(question);
     }catch(err){
-        removeDir(req.objectId,'questions');
+        await removeDir(req.objectId,'questions');
         logger.error(err.message);
         res.status(400).send({error:err.message});
     }
@@ -168,13 +168,10 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         const questionId= req.body.questionID;
         const codePath = `./data/user-submits/${user.studentNumber}/
             ${questionId}/${req.files.code[0].originalname}`;
-        // const result = await runScript(codePath,user.studentNumber);
-        const result = readOutput(req.files.output[0].path);
+        const result = readOutput(req.files.output[0].path).toString().trim();
         if(!result) throw new Error("couldn't read output");
         const questionData = user.testCases.find(obj=> String(obj.forQuestion)===String(questionId));
-        console.log(String(questionData.correctOutput))
-        console.log(result)
-        if(String(questionData.correctOutput) === String(result)){
+        if(questionData.correctOutput=== result){
             user.codes = user.codes.concat({
                 forQuestion: questionId,
                 codePath: codePath,
