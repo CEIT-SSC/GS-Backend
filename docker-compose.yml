@@ -1,0 +1,17 @@
+version: "3"
+services: 
+  app:
+    container_name: gs_back
+    restart: always
+    build: .
+    ports:
+      - "3000:3000"
+    links:
+      - mongoDB
+  mongoDB:
+    container_name: mongoDB
+    image: mongo
+    ports:
+      - "27018:27017"
+    volumes: 
+      - "/home/db/mongo:/data/db"
