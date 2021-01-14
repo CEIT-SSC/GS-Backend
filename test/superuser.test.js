@@ -11,8 +11,8 @@ describe('Superuser',()=>{
 
     describe('Testing superuser login',()=>{
         let superuser = {
-            username: config.SUPERUSER_NAME,
-            password: config.SUPERUSER_PASS
+            // username: config.SUPERUSER_NAME,
+            // password: config.SUPERUSER_PASS
         }
         it('should log in with correct inputs',(done)=>{
             chai.request(app)
