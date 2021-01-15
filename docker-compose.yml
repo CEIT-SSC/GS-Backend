@@ -9,7 +9,7 @@ services:
     environment:
       - MONGODB_URL="${MONGODB_URL}"
       - JWT_SECRET="${JWT_SECRET}"
-      - PORT="${PORT}"
+      - PORT=${PORT}
     links:
       - mongo
   mongo:
