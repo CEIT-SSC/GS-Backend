@@ -7,11 +7,13 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - MONGODB_URL="${MONGODB_URL}"
-      - JWT_SECRET="${JWT_SECRET}"
+      - MONGODB_URL=${MONGODB_URL}
+      - JWT_SECRET=${JWT_SECRET}
       - PORT=${PORT}
     links:
       - mongo
+    env_file: 
+      - ./.env
   mongo:
     container_name: mongo
     image: mongo
