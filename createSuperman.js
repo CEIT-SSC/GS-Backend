@@ -1,7 +1,7 @@
 const SuperUser = require("./models/SuperUser");
 const mongoose= require ("mongoose");
 const config= require("./utils/config");
-if(process.argv.length<3) console.log("enter username and password");
+// if(process.argv.length<3) console.log("enter username and password");
 async function dropDB(){
     const connection=mongoose.createConnection(config.MONGODB_URL,{
         useNewUrlParser:true,
@@ -21,8 +21,8 @@ async function createSuperUser(){
                 useFindAndModify:false,
                 useCreateIndex:true
             });
-    const username=process.args[1];
-    const password=process.args[2];
+    const username=process.env.SUPER_NAME;
+    const password=process.env.SUPER_PASS;
     const newSuper= new SuperUser({
         username:username,
         password:password,
