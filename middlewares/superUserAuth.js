@@ -10,7 +10,6 @@ async function authCheckSuperUser(req){
         if(!superUser)return false;
         req.token=token;
         req.admin=superUser;
-        console.log("super enable")
         return true;
     }catch(err){
         return false
