@@ -1,45 +1,45 @@
 const chai =require ('chai');
 const chaiHttp = require ('chai-http');
-const app = require('../app')
-const mongoose = require ('mongoose')
-const config = require ('../utils/config')
-const should = chai.should();
-chai.use(chaiHttp)
+const app = require('../index');
+const mongoose = require ('mongoose');
+const config = require ('../utils/config');
+const SuperUser= require ("../models/SuperUser");
+chai.should();
+chai.use(chaiHttp);
 
-
-describe('Superuser',()=>{
-
-    describe('Testing superuser login',()=>{
-        let superuser = {
-            // username: config.SUPERUSER_NAME,
-            // password: config.SUPERUSER_PASS
+describe('superuser routes', ()=>{
+    beforeEach('creating dummy superuser',function(done){
+        const superDummy= new SuperUser({
+            username:"dumbass",
+            password: "dumbpass"
+        })
+        superDummy.save().then(result=>{
+            console.log('success')
+            done()
+        }).catch(err=>done(err));
+    });
+    afterEach('droping dummy superusers',function(done){
+        SuperUser.findOneAndRemove({username: 'dumbass'}).then(result=>{
+            done();
+        }).catch(err=>done(err));
+    });
+    it('Testing /superarea/login', (done)=>{
+        const superInfo ={
+            username: 'dumbass',
+            password: 'dumbpass'
         }
-        it('should log in with correct inputs',(done)=>{
-            chai.request(app)
+         chai.request(app)
             .post('/superarea/login')
-            .send(superuser)
+            .send(superInfo)
             .end((err,res)=>{
                 res.should.have.status(200);
-                res.should.be.a('object');
-                res.body.admin.should.have.property('username');
+                res.body.should.be.a('object');
+                res.body.should.have.property('admin');
                 res.body.should.have.property('token');
                 done();
             });
-        });
-        it("shouldn't login with false inputs",(done)=>{
-            let superuser = {
-                username: 'falseShit',
-                password: 'tsss'
-            }
-            chai.request(app)
-            .post('/superarea/login')
-            .send(superuser)
-            .end((err,res)=>{
-                res.should.have.status(200);
-                res.should.be.a('object');
-                res.body.should.have.property('error');
-                done();
-            });
-        });
     });
+
+    
+
 });
