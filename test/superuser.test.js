@@ -23,11 +23,11 @@ describe('superuser routes', ()=>{
             done();
         }).catch(err=>done(err));
     });
+    const superInfo ={
+        username: 'dumbass',
+        password: 'dumbpass'
+    }
     it('Testing /superarea/login', (done)=>{
-        const superInfo ={
-            username: 'dumbass',
-            password: 'dumbpass'
-        }
          chai.request(app)
             .post('/superarea/login')
             .send(superInfo)
@@ -39,7 +39,28 @@ describe('superuser routes', ()=>{
                 done();
             });
     });
+    it('Testing /superarea/logout', function(done){
+        chai.request(app)
+            .post('/superarea/login')
+            .send(superInfo)
+            .end((err,res)=>{
+                if(err) done(err);
+                res.should.have.status(200);
+                res.body.should.have.property('token');
+                const token=res.body.token;
+                chai.request(app)
+                    .post('/superarea/logout')
+                    .set('Authorization',`Bearer ${token}`)
+                    .end((err,res)=>{
+                        if(err)done(err);
+                        
+                        res.body.should.have.property('message').equal("successfully logged out");
+                        done();
 
+                    });
+
+            });
+    });
     
 
 });
