@@ -32,7 +32,7 @@ router.get("/:studentNumber",authenticateSuperUser,async(req,res)=>{
     }
 });
 
-router.post("/",authenticateAdmin,async(req,res)=>{
+router.post("/",async(req,res)=>{
     try{
         if(!req.body.studentNumber ||!req.body.password){
             throw new Error("Enter student number and password")
