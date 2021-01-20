@@ -114,23 +114,48 @@ describe("Quesition Admin Test",()=>{
                 done();
             });
     });
-    describe("testing login and logout",()=>{
-        let adminAuth;
-        it("testing question admin login /questionadmin/login",function(done){
-            chai.request(app)
-                .post("/questionadmin/login")
-                .send({
-                    username: "newDummyQadmin",
-                    password: "dummpyQpass12"
-                })
-                .end((err,res)=>{
-                    if(err)done(err);
-                    res.should.have.status(200);
-                    res.body.should.have.property("questionAdmin");
-                    res.body.should.have.property("token");
-                    adminAuth=res.body.token;
-                    done();
-                });
-        });
+    let adminAuth;
+    it("testing question admin login /questionadmin/login",function(done){
+        chai.request(app)
+            .post("/questionadmin/login")
+            .send({
+                username: "newDummyQadmin",
+                password: "dummpyQpass12"
+            })
+            .end((err,res)=>{
+                if(err)done(err);
+                res.should.have.status(200);
+                res.body.should.have.property("questionAdmin");
+                res.body.should.have.property("token");
+                adminAuth=res.body.token;
+                done();
+            });
+    });
+    it("testing question admin logout /questionadmin/me/logout",function(done){
+        chai.request(app)
+            .post("/questionadmin/me/logout")
+            .set('Authorization',`Bearer ${adminAuth}`)
+            .end((err,res)=>{
+                if(err)done(err);
+                res.should.have.status(200);
+                res.body.should.have.property("message").equal("logged out successfully");
+                done();
+            });
+    });
+    // describe("testing login and logout",()=>{
+        
+    // });
+    it("deleting specified question admin /questionadmin/username DELETE",function(done){
+        chai.request(app)
+            .del("/questionadmin/newDummyQadmin")
+            .set('Authorization',`Bearer ${authToken}`)
+            .end((err,res)=>{
+                if(err) done(err)
+                res.body.should.be.a("object");
+                res.should.have.status(200);
+                res.body.should.have.property("questionAdmin");
+                res.body.should.have.property("message").equal("admin successfully deleted");
+                done();
+            });
     });
 });
