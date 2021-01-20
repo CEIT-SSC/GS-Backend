@@ -67,7 +67,7 @@ describe("Quesition Admin Test",()=>{
                 res.body.should.be.a("array");
                 res.should.have.status(200);
                 res.body[0].should.have.property("_id");
-                res.body[0].should.have.property("username").equal("dummyQadmin");
+                res.body[0].should.have.property("username");
                 done();
             });
     });
@@ -85,18 +85,33 @@ describe("Quesition Admin Test",()=>{
                 done();
             });
     });
-    it("getting specified question admin /questionadmin/{username} GET",function(done){
-        chai.request(app)
+    it("patching specified question admin /questionadmin/{username} GET",function(done){
+        QuestionAdmin.findOneAndDelete({username:"newDummyQadmin"}).then(()=>{
+            chai.request(app)
             .patch("/questionadmin/dummyQadmin")
             .set('Authorization',`Bearer ${authToken}`)
             .send({
                 username: "newDummyQadmin"
             })
             .end((err,res)=>{
-                if(err) done(err)
+                if(err) done(err);
                 res.should.have.status(200);
                 res.body.should.have.property("message").equal("question admin updated successfully");
                 done();
             });
+        });
     });
+    // it("getting patched question admin",function(done){
+    //     chai.request(app)
+    //         .get("/questionadmin/newDummyQadmin")
+    //         .set('Authorization',`Bearer ${authToken}`)
+    //         .end((err,res)=>{
+    //             if(err) done(err)
+    //             res.body.should.be.a("object");
+    //             res.should.have.status(200);
+    //             res.body.should.have.property("_id");
+    //             res.body.should.have.property("username").equal("newDummyQadmin");
+    //             done();
+    //         });
+    // });
 });
