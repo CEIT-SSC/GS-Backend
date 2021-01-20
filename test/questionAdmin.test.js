@@ -71,4 +71,18 @@ describe("Quesition Admin Test",()=>{
                 done();
             });
     });
+
+    it("getting specified question admin /questionadmin/{username} GET",function(done){
+        chai.request(app)
+            .get("/questionadmin/dummyQadmin")
+            .set('Authorization',`Bearer ${authToken}`)
+            .end((err,res)=>{
+                if(err) done(err)
+                res.body.should.be.a("object");
+                res.should.have.status(200);
+                res.body.should.have.property("_id");
+                res.body.should.have.property("username").equal("dummyQadmin");
+                done();
+            });
+    });
 });
