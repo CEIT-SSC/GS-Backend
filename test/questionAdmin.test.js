@@ -9,9 +9,8 @@ chai.use(chaiHttp);
 
 describe("Quesition Admin Test",()=>{
 
-
     let authToken;
-    beforeEach('creating superuser',(done)=>{
+    before('creating superuser',(done)=>{
         const superDummy= new SuperUser({
             username:"dumbass",
             password: "dumbpass"
@@ -30,7 +29,7 @@ describe("Quesition Admin Test",()=>{
             });
         });
     });
-    afterEach('droping dummy superusers',function(done){
+    after('droping dummy superusers',function(done){
         SuperUser.findOneAndRemove({username: 'dumbass'}).then(result=>{
             done();
         }).catch(err=>done(err));
@@ -58,4 +57,18 @@ describe("Quesition Admin Test",()=>{
             });
         });
     });
-})
+
+    it("getting all question admins /questionadmin/ GET",function(done){
+        chai.request(app)
+            .get("/questionadmin/")
+            .set('Authorization',`Bearer ${authToken}`)
+            .end((err,res)=>{
+                if(err) done(err)
+                res.body.should.be.a("array");
+                res.should.have.status(200);
+                res.body[0].should.have.property("_id");
+                res.body[0].should.have.property("username").equal("dummyQadmin");
+                done();
+            });
+    });
+});
