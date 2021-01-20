@@ -101,17 +101,17 @@ describe("Quesition Admin Test",()=>{
             });
         });
     });
-    // it("getting patched question admin",function(done){
-    //     chai.request(app)
-    //         .get("/questionadmin/newDummyQadmin")
-    //         .set('Authorization',`Bearer ${authToken}`)
-    //         .end((err,res)=>{
-    //             if(err) done(err)
-    //             res.body.should.be.a("object");
-    //             res.should.have.status(200);
-    //             res.body.should.have.property("_id");
-    //             res.body.should.have.property("username").equal("newDummyQadmin");
-    //             done();
-    //         });
-    // });
+    it("getting patched question admin",function(done){
+        chai.request(app)
+            .get("/questionadmin/newDummyQadmin")
+            .set('Authorization',`Bearer ${authToken}`)
+            .end((err,res)=>{
+                if(err) done(err)
+                res.body.should.be.a("object");
+                res.should.have.status(200);
+                res.body.should.have.property("_id");
+                res.body.should.have.property("username").equal("newDummyQadmin");
+                done();
+            });
+    });
 });
