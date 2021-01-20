@@ -18,7 +18,7 @@ async function authCheckQuestionAdmin(req){
         const decoded = jwt.verify(token,config.JWT_SECRET);
         const questionAdmin = await QuestionAdmin.findOne({ _id: decoded._id, 'tokens.token': token });
 
-        if(!questionAdmin )return false;;
+        if(!questionAdmin )return false;
         req.token=token;
         req.admin=questionAdmin;
         return true;
@@ -27,7 +27,7 @@ async function authCheckQuestionAdmin(req){
     }
 }
 async function authJustQuestionAdmin( req, res, next){
-    if(!(await authCheckSuperUser (req ))||await authCheckQuestionAdmin(req)){
+    if(!(await authCheckSuperUser (req ))&& await authCheckQuestionAdmin(req)){
         next();
     }else{
         res.status(401).send({
