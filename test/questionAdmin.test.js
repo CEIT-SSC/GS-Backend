@@ -85,4 +85,18 @@ describe("Quesition Admin Test",()=>{
                 done();
             });
     });
+    it("getting specified question admin /questionadmin/{username} GET",function(done){
+        chai.request(app)
+            .patch("/questionadmin/dummyQadmin")
+            .set('Authorization',`Bearer ${authToken}`)
+            .send({
+                username: "newDummyQadmin"
+            })
+            .end((err,res)=>{
+                if(err) done(err)
+                res.should.have.status(200);
+                res.body.should.have.property("message").equal("question admin updated successfully");
+                done();
+            });
+    });
 });
