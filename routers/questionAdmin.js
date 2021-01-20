@@ -41,7 +41,7 @@ router.get("/",authenticateSuperUser,async (req,res)=>{
 
 router.get("/:username",authenticateSuperUser,async (req,res)=>{
     try{
-        const questionAdmin = await QuestionAdmin.find({
+        const questionAdmin = await QuestionAdmin.findOne({
             username:req.params.username});
         if(!questionAdmin) throw new Error("Couldn't find admin");
 
