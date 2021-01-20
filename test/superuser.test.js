@@ -14,7 +14,6 @@ describe('superuser routes', ()=>{
             password: "dumbpass"
         })
         superDummy.save().then(result=>{
-            console.log('success')
             done()
         }).catch(err=>done(err));
     });
