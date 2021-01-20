@@ -7,7 +7,7 @@ const SuperUser= require ("../models/SuperUser");
 chai.should();
 chai.use(chaiHttp);
 
-describe('superuser routes', ()=>{
+describe('Superuser Test', ()=>{
     beforeEach('creating dummy superuser',function(done){
         const superDummy= new SuperUser({
             username:"dumbass",

@@ -58,7 +58,7 @@ describe("Quesition Admin Test",()=>{
         });
     });
 
-    it("getting all question admins /questionadmin/ GET",function(done){
+    it("Getting all question admins /questionadmin/ GET",function(done){
         chai.request(app)
             .get("/questionadmin/")
             .set('Authorization',`Bearer ${authToken}`)
@@ -72,7 +72,7 @@ describe("Quesition Admin Test",()=>{
             });
     });
 
-    it("getting specified question admin /questionadmin/{username} GET",function(done){
+    it("Getting specified question admin /questionadmin/{username} GET",function(done){
         chai.request(app)
             .get("/questionadmin/dummyQadmin")
             .set('Authorization',`Bearer ${authToken}`)
@@ -85,7 +85,7 @@ describe("Quesition Admin Test",()=>{
                 done();
             });
     });
-    it("patching specified question admin /questionadmin/{username} GET",function(done){
+    it("Patching specified question admin /questionadmin/{username} GET",function(done){
         QuestionAdmin.findOneAndDelete({username:"newDummyQadmin"}).then(()=>{
             chai.request(app)
             .patch("/questionadmin/dummyQadmin")
@@ -101,7 +101,7 @@ describe("Quesition Admin Test",()=>{
             });
         });
     });
-    it("getting patched question admin",function(done){
+    it("Getting patched question admin",function(done){
         chai.request(app)
             .get("/questionadmin/newDummyQadmin")
             .set('Authorization',`Bearer ${authToken}`)
@@ -115,7 +115,7 @@ describe("Quesition Admin Test",()=>{
             });
     });
     let adminAuth;
-    it("testing question admin login /questionadmin/login",function(done){
+    it("Question admin login /questionadmin/login",function(done){
         chai.request(app)
             .post("/questionadmin/login")
             .send({
@@ -131,7 +131,7 @@ describe("Quesition Admin Test",()=>{
                 done();
             });
     });
-    it("testing question admin logout /questionadmin/me/logout",function(done){
+    it("Question admin logout /questionadmin/me/logout",function(done){
         chai.request(app)
             .post("/questionadmin/me/logout")
             .set('Authorization',`Bearer ${adminAuth}`)
@@ -142,10 +142,8 @@ describe("Quesition Admin Test",()=>{
                 done();
             });
     });
-    // describe("testing login and logout",()=>{
-        
-    // });
-    it("deleting specified question admin /questionadmin/username DELETE",function(done){
+
+    it("Delete specified question admin /questionadmin/username DELETE",function(done){
         chai.request(app)
             .del("/questionadmin/newDummyQadmin")
             .set('Authorization',`Bearer ${authToken}`)
