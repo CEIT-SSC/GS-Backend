@@ -114,4 +114,23 @@ describe("Quesition Admin Test",()=>{
                 done();
             });
     });
+    describe("testing login and logout",()=>{
+        let adminAuth;
+        it("testing question admin login /questionadmin/login",function(done){
+            chai.request(app)
+                .post("/questionadmin/login")
+                .send({
+                    username: "newDummyQadmin",
+                    password: "dummpyQpass12"
+                })
+                .end((err,res)=>{
+                    if(err)done(err);
+                    res.should.have.status(200);
+                    res.body.should.have.property("questionAdmin");
+                    res.body.should.have.property("token");
+                    adminAuth=res.body.token;
+                    done();
+                });
+        });
+    });
 });
