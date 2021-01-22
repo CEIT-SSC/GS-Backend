@@ -31,7 +31,6 @@ describe("Question Test" , ()=>{
                 done();
             });
         });
-        
     });
     after('droping dummy superusers',function(done){
         QuestionAdmin.findOneAndRemove({username: 'dumbAdmin'}).then(result=>{
@@ -61,4 +60,19 @@ describe("Question Test" , ()=>{
                 done();
             });
     });
+    it("Getting all questions /question/ GET",(done)=>{
+        chai.request(app)
+            .get("/question/")
+            .set('Authorization',`Bearer ${authToken}`)
+            .end((err,res)=>{
+                if(err)done(err);
+                res.should.have.status(200);
+                res.body.should.be.a('array');
+                res.body[0].should.have.property("forDate");
+                res.body[0].should.have.property("name").equal("dummyName");
+                res.body[0].should.have.property("body").equal("dummy body baby");
+                res.body[0].should.have.property("score");
+                done();
+            });
+    })
 });
