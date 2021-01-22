@@ -156,4 +156,16 @@ describe("Quesition Admin Test",()=>{
                 done();
             });
     });
+    it("checking if question admin is deleted",function(done){
+        chai.request(app)
+            .get("/questionadmin/")
+            .set('Authorization',`Bearer ${authToken}`)
+            .end((err,res)=>{
+                if(err) done(err)
+                res.body.should.be.a("array");
+                res.should.have.status(200);
+                res.body.should.be.empty;
+                done();
+            });
+    });
 });
