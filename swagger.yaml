@@ -107,7 +107,7 @@ paths:
           schema:
             type: "object"
             example:
-              admin:
+              questionAdmin:
                 _id: "question admin's id"
                 username : "newAdminUsername"
               message: "question admin created successfully"
@@ -634,7 +634,7 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "forDate"
+      - name: "date"
         in: "formData"
         description: "timestamp of the date"
         required: true
