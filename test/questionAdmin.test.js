@@ -8,13 +8,12 @@ chai.should();
 chai.use(chaiHttp);
 
 describe("Quesition Admin Test",()=>{
-
     let authToken;
     before('creating superuser',(done)=>{
         const superDummy= new SuperUser({
             username:"dumbass",
             password: "dumbpass"
-        })
+        });
         superDummy.save().then(()=>{
             chai.request(app)
             .post("/superarea/login")
