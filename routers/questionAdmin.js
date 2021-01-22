@@ -15,9 +15,7 @@ router.post('/',authenticateSuperUser,async (req,res)=>{
             password:req.body.password});
         //sending welcome email or sth;
             // u can generate auth and redirect to me url
-        await questionAdmin.save().then(()=>{
-            logger.info("new question admin created")
-        })
+        await questionAdmin.save();
         res.status(201).send({questionAdmin,
             message: "question admin created successfully"});
     }catch(err){
@@ -65,11 +63,10 @@ router.delete("/:username",authenticateSuperUser,async (req,res)=>{
                 username:req.params.username
             })
                 .then(questionAdmin=>{
-                    logger.info("question admin successfully removed")
                     res.status(200).send({
                         questionAdmin,
                         message: "admin successfully deleted"
-                    })
+                    });
                 });
     }catch(err){
         res.status(500).send({
@@ -93,9 +90,7 @@ router.patch("/:username", authenticateSuperUser,async(req,res)=>{
         Object.keys(req.body).forEach((fieldToUpdate)=>{
             questionAdmin[fieldToUpdate] = req.body[fieldToUpdate];
         })
-        await questionAdmin.save().then(()=>{
-            logger.info("updated successfully")
-        })
+        await questionAdmin.save();
 
         res.send({
             message: "question admin updated successfully"
