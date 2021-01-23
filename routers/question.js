@@ -2,7 +2,7 @@ const router = require ("express").Router();
 const Question = require ("../models/Question");
 const del = require("del");
 const logger = require("../utils/logger");
-
+const process = require ("process");
 const {authenticateAdmin } = require("../middlewares/questionAdminAuth");
 const {authGetAccess} = require ("../middlewares/questionAccessAuth");
 const {authenticateUser} = require("../middlewares/userAuth");
@@ -10,9 +10,9 @@ const { uploadTestCase,
       generateIdAndDir,
       submittion,
         patchHandler} = require ("../middlewares/upload");
-
+const {runScript} = require("../utils/utils");
 // const {authGetAccess} = require ("../middlewares/questionAccessAuth");
-const { authenticateUser } = require("../middlewares/userAuth");
+// const { authenticateUser } = require("../middlewares/userAuth");
 const { readOutput ,
         saveFile } = require("../utils/utils");
 
@@ -198,7 +198,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         )
     }
 });
-router.get('/:id/testCase',authenticateUser,async(req,res)=>{
+router.get('/:id/testcase',authenticateUser,async(req,res)=>{
     try{
         const question = await Question.findOne({
             _id:req.params.id
@@ -206,12 +206,12 @@ router.get('/:id/testCase',authenticateUser,async(req,res)=>{
         if( ! question ) throw new Error(" couldn't find question with specified id");
         const user=req.user;
         const savedTestCase = user.testCases.find(obj => obj.forQuestion == req.params.id);
+        let options={
+            root:process.cwd()
+        }
         if(savedTestCase){
-            res.status(200).send({
-                question,
-                testCases: savedTestCase.input
-            });
-
+            res.status(200)
+                .sendFile(`./data/user-data/${user.studentNumber}/${req.params.id}/testCase.txt`,options);
         }else{
             const studentNumber = user.studentNumber;
             const testGeneratorPath = question.testGeneratorPath;
@@ -228,17 +228,10 @@ router.get('/:id/testCase',authenticateUser,async(req,res)=>{
             user.testCases = user.testCases.concat({
                 forQuestion: req.params.id,
                 input: testCasePath,
-                // the output should be changed
                 correctOutput: correctOutputPath
             });
-            await user.save();
-    
-            // await saveTestCase(req.params.id,generatedTestCase); //QUSTION ? IS IT NEEDED??
-    
-            res.status(200).send({
-                question,
-                testCases: generatedTestCase
-            });
+            await user.save();    
+            res.status(200).sendFile(`./data/user-data/${studentNumber}/${req.params.id}/testCase.txt`,options);
         }
     }catch(err){
         logger.error(err);
