@@ -13,7 +13,8 @@ const { uploadTestCase,
 
 // const {authGetAccess} = require ("../middlewares/questionAccessAuth");
 const { authenticateUser } = require("../middlewares/userAuth");
-const { readOutput } = require("../utils/utils");
+const { readOutput ,
+        saveFile } = require("../utils/utils");
 
 const fieldstoUpload=[
     {name:'answer', maxCount:1},
@@ -198,7 +199,53 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
     }
 });
 router.get('/:id/testCase',authenticateUser,async(req,res)=>{
+    try{
+        const question = await Question.findOne({
+            _id:req.params.id
+        });
+        if( ! question ) throw new Error(" couldn't find question with specified id");
+        const user=req.user;
+        const savedTestCase = user.testCases.find(obj => obj.forQuestion == req.params.id);
+        if(savedTestCase){
+            res.status(200).send({
+                question,
+                testCases: savedTestCase.input
+            });
 
+        }else{
+            const studentNumber = user.studentNumber;
+            const testGeneratorPath = question.testGeneratorPath;
+            const answerPath = question.answerPath;
+            const generatedTestCase = await runScript(testGeneratorPath,studentNumber);
+            const expectedAnswer = await runScript(answerPath, studentNumber); // NOT SURE
+            if (!generatedTestCase) throw new Error ("couldn't create test case");
+
+            const testCasePath= await saveFile(`./data/user-data/${studentNumber}/${req.params.id}/`
+            ,'testCase.txt',generatedTestCase.trim());
+            const correctOutputPath=await saveFile(`./data/user-data/${studentNumber}/${req.params.id}/`,
+            'correctOutput.txt',expectedAnswer.trim());
+
+            user.testCases = user.testCases.concat({
+                forQuestion: req.params.id,
+                input: testCasePath,
+                // the output should be changed
+                correctOutput: correctOutputPath
+            });
+            await user.save();
+    
+            // await saveTestCase(req.params.id,generatedTestCase); //QUSTION ? IS IT NEEDED??
+    
+            res.status(200).send({
+                question,
+                testCases: generatedTestCase
+            });
+        }
+    }catch(err){
+        logger.error(err);
+        res.send({
+            message:err.message
+        });
+    }
 });
 //getting specific question with specified testcase
 module.exports=router;
