@@ -1,6 +1,9 @@
 const SuperUser = require("./models/SuperUser");
 const mongoose= require ("mongoose");
 const config= require("./utils/config");
+const del = require ('del');
+const fs= require('fs')
+// const { delete } = require("./app");
 // if(process.argv.length<3) console.log("enter username and password");
 async function dropDB(){
     const connection=mongoose.createConnection(config.MONGODB_URL,{
@@ -9,8 +12,9 @@ async function dropDB(){
         useFindAndModify:false,
         useCreateIndex:true
     });
-    await connection.dropDatabase().then(()=>{
+    connection.dropDatabase().then(async()=>{
         console.log("db droped");
+        await deleteData();
         createSuperUser();
     });
 }
@@ -27,12 +31,26 @@ async function createSuperUser(){
         username:username,
         password:password,
     });
-    await newSuper.save().then(result=>{
+    newSuper.save().then(result=>{
         console.log("superuser created");
         mongoose.disconnect();
     }).catch(error=> console.log(error));
 }
-
+async function deleteData(){
+    
+    const directories = await fs.readdirSync('./data/questions', { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+    directories.forEach(directory=>{
+         del('./data/questions/'+directory);
+    });
+    const submits = fs.readdirSync('./data/user-submits', { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+    submits.forEach(submit=>{
+         del('./data/user-submits/'+submit);
+    });
+}
 dropDB();
 
 
