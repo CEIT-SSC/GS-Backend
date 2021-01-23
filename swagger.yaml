@@ -580,10 +580,10 @@ paths:
         "500":
           description: "error will be returned"
 
-  /user/me/getquestion/{id}:
+  /question/{id}/testcase/ :
     get:
       tags:
-      - "User"
+      - "Question"
       summary: "gets specified question"
       description: "This can only be done by user itself."
       operationId: "userGetQeustionById"
@@ -892,75 +892,6 @@ paths:
               - studentNumber: "studentNumber of user"
                 penalty : "submittedDate - forDateOfQeustion"
                 score: "the score of user"
-                
-                
-      
-      
-
-  # /user/login:
-  #   get:
-  #     tags:
-  #     - "user"
-  #     summary: "Logs user into the system"
-  #     description: ""
-  #     operationId: "loginUser"
-  #     produces:
-  #     - "application/xml"
-  #     - "application/json"
-  #     parameters:
-  #     - name: "username"
-  #       in: "query"
-  #       description: "The user name for login"
-  #       required: true
-  #       type: "string"
-  #     - name: "password"
-  #       in: "query"
-  #       description: "The password for login in clear text"
-  #       required: true
-  #       type: "string"
-  #     responses:
-  #       "200":
-  #         description: "successful operation"
-  #         schema:
-  #           type: "string"
-  #         headers:
-  #           X-Rate-Limit:
-  #             type: "integer"
-  #             format: "int32"
-  #             description: "calls per hour allowed by the user"
-  #           X-Expires-After:
-  #             type: "string"
-  #             format: "date-time"
-  #             description: "date in UTC when token expires"
-  #       "400":
-  #         description: "Invalid username/password supplied"
-  # /user/logout:
-  #   get:
-  #     tags:
-  #     - "user"
-  #     summary: "Logs out current logged in user session"
-  #     description: ""
-  #     operationId: "logoutUser"
-  #     produces:
-  #     - "application/xml"
-  #     - "application/json"
-  #     parameters: []
-  #     responses:
-  #       default:
-  #         description: "successful operation"
-
-# securityDefinitions:
-#   petstore_auth:
-#     type: "oauth2"
-#     authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
-#     flow: "implicit"
-#     scopes:
-#       write:pets: "modify pets in your account"
-#       read:pets: "read your pets"
-#   api_key:
-#     type: "apiKey"
-#     name: "api_key"
-#     in: "header"
 definitions:
   SuperUser:
     type: "object"
@@ -1008,44 +939,6 @@ definitions:
       testCases:
         type: "string"
         description: "arrays of testcases"
-    
-  # Pet:
-  #   type: "object"
-  #   required:
-    # - "name"
-    # - "photoUrls"
-    # properties:
-    #   id:
-    #     type: "integer"
-    #     format: "int64"
-    #   category:
-    #     $ref: "#/definitions/Category"
-    #   name:
-    #     type: "string"
-    #     example: "doggie"
-    #   photoUrls:
-    #     type: "array"
-    #     xml:
-    #       name: "photoUrl"
-    #       wrapped: true
-    #     items:
-    #       type: "string"
-    #   tags:
-    #     type: "array"
-    #     xml:
-    #       name: "tag"
-    #       wrapped: true
-    #     items:
-    #       $ref: "#/definitions/Tag"
-    #   status:
-    #     type: "string"
-    #     description: "pet status in the store"
-    #     enum:
-    #     - "available"
-    #     - "pending"
-    #     - "sold"
-    # xml:
-    #   name: "Pet"
   Question:
     type: "object"
     properties:
