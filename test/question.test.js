@@ -107,4 +107,15 @@ describe("Question Test" , ()=>{
                 done();
             });
     });
+    it('Deleting specific question /question/{id}',(done)=>{
+        chai.request(app)
+            .del(`/question/${questionId}`)
+            .set('Authorization',`Bearer ${authToken}`)
+            .end((err,res)=>{
+                if(err)done(err);
+                res.should.have.status(200);
+                res.body.should.have.property('message').equal("successfully removed");
+                done();
+            });
+    });
 });
