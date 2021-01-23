@@ -18,8 +18,18 @@ function readOutput(filePath){
     return output;
 }
 
+async function saveFile(directory,name,content){
+    if(!fs.existsSync(directory)){
+        fs.mkdirSync(directory,{recursive:true});
+    }
+    const saveDir=directory+name;
+    await fs.writeFileSync(saveDir,content);
+    console.log(`${name} saved successfully`);
+    return saveDir;
+}
 
 module.exports = {
     runScript,
-    readOutput
+    readOutput,
+    saveFile
 }
