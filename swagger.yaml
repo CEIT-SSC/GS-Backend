@@ -698,7 +698,7 @@ paths:
         "200":
           description: "return the list of all questions"
           schema:
-            $ref: "#/definitions/Question"
+           $ref: "#/definitions/Question"
   /question/submit:
     post:
       tags:
@@ -1074,10 +1074,8 @@ definitions:
               example: "example of output"
       testGeneratorPath:
         type: "string"
-        example: "the path of testgenerator file"
       answerPath:
         type: "string"
-        example: "the path of answer file"
       score: 
         type: "number"
         example: "score (as number)"
