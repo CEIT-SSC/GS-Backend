@@ -60,6 +60,7 @@ describe("Question Test" , ()=>{
                 done();
             });
     });
+    let questionId;
     it("Getting all questions /question/ GET",(done)=>{
         chai.request(app)
             .get("/question/")
@@ -68,11 +69,23 @@ describe("Question Test" , ()=>{
                 if(err)done(err);
                 res.should.have.status(200);
                 res.body.should.be.a('array');
+                questionId=res.body[0]._id;
                 res.body[0].should.have.property("forDate");
                 res.body[0].should.have.property("name").equal("dummyName");
                 res.body[0].should.have.property("body").equal("dummy body baby");
                 res.body[0].should.have.property("score");
                 done();
             });
-    })
+    });
+    it("Get specific questions /question/{id} GET",(done)=>{
+        chai.request(app)
+            .get(`/question/${questionId}`)
+            .set('Authorization',`Bearer ${authToken}`)
+            .end((err,res)=>{
+                if(err)done(err);
+                res.body.should.be.a('object');
+                res.body.should.have.property('_id').equal(questionId);
+                done();
+            });
+    });
 });
