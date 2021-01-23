@@ -4,7 +4,8 @@ const del = require("del");
 const logger = require("../utils/logger");
 
 const {authenticateAdmin } = require("../middlewares/questionAdminAuth");
-
+const {authGetAccess} = require ("../middlewares/questionAccessAuth");
+const {authenticateUser} = require("../middlewares/userAuth");
 const { uploadTestCase,
       generateIdAndDir,
       submittion,
@@ -69,7 +70,7 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
 
 });
 //get questions
-router.get("/", authenticateAdmin, async(req,res)=>{
+router.get("/", authGetAccess, async(req,res)=>{
     try{
         //forDates should be handled
         const questions = await Question.find({});
@@ -82,7 +83,7 @@ router.get("/", authenticateAdmin, async(req,res)=>{
     }
 });
 //get specific question
-router.get("/:id", authenticateAdmin, async(req,res)=>{
+router.get("/:id",authGetAccess, async(req,res)=>{
     try{
         const question = await Question.findById({
             _id:req.params.id
@@ -196,6 +197,8 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         )
     }
 });
+router.get('/:id/testCase',authenticateUser,async(req,res)=>{
 
+});
 //getting specific question with specified testcase
 module.exports=router;
