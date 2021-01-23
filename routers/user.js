@@ -176,52 +176,52 @@ router.get("/me/getquestion/", authenticateUser, async(req,res)=>{
         })
     }
 });
-router.get("/me/getquestion/:id", authenticateUser,async (req,res)=>{
-    try{
-        const question = await Question.findOne({
-            _id:req.params.id
-        });
-        if( ! question ) throw new Error(" couldn't find question with entered id");
+// router.get("/me/getquestion/:id", authenticateUser,async (req,res)=>{
+//     try{
+//         const question = await Question.findOne({
+//             _id:req.params.id
+//         });
+//         if( ! question ) throw new Error(" couldn't find question with entered id");
 
 
-        const user = req.user;
-        const savedTestCase = user.testCases.find(obj => obj.forQuestion == req.params.id);
-        if(savedTestCase){
-            res.status(200).send({
-                question,
-                testCases: savedTestCase.input
-            });
+//         const user = req.user;
+//         const savedTestCase = user.testCases.find(obj => obj.forQuestion == req.params.id);
+        // if(savedTestCase){
+        //     res.status(200).send({
+        //         question,
+        //         testCases: savedTestCase.input
+        //     });
 
-        }else{
+        // }else{
 
-            const studentNumber = user.studentNumber;
-            const testGeneratorPath = question.testGeneratorPath;
-            const answerPath = question.answerPath;
-            const generatedTestCase = await runScript(testGeneratorPath,studentNumber);
-            const excpectedAnswer = await runScript(answerPath, studentNumber); // NOT SURE
-            if (!generatedTestCase) throw new Error ("couldn't create test case");
-            user.testCases = user.testCases.concat({
-                forQuestion: req.params.id,
-                input: generatedTestCase,
-                // the output should be changed
-                correctOutput: excpectedAnswer.trim()
-            });
-            await user.save();
+        //     const studentNumber = user.studentNumber;
+        //     const testGeneratorPath = question.testGeneratorPath;
+            // const answerPath = question.answerPath;
+            // const generatedTestCase = await runScript(testGeneratorPath,studentNumber);
+            // const excpectedAnswer = await runScript(answerPath, studentNumber); // NOT SURE
+            // if (!generatedTestCase) throw new Error ("couldn't create test case");
+            // user.testCases = user.testCases.concat({
+            //     forQuestion: req.params.id,
+            //     input: generatedTestCase,
+            //     // the output should be changed
+            //     correctOutput: excpectedAnswer.trim()
+            // });
+            // await user.save();
     
-            // await saveTestCase(req.params.id,generatedTestCase); //QUSTION ? IS IT NEEDED??
+//             // await saveTestCase(req.params.id,generatedTestCase); //QUSTION ? IS IT NEEDED??
     
-            res.status(200).send({
-                question,
-                testCases: generatedTestCase
-            });
-        }
+//             res.status(200).send({
+//                 question,
+//                 testCases: generatedTestCase
+//             });
+//         }
 
 
-    }catch(err){
-        logger.error(err);
-        res.send({
-            error :err
-        })
-    }
-})
+//     }catch(err){
+//         logger.error(err);
+//         res.send({
+//             error :err
+//         })
+//     }
+// })
 module.exports=router;
