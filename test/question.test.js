@@ -71,8 +71,8 @@ describe("Question Test" , ()=>{
                 res.body.should.be.a('array');
                 questionId=res.body[0]._id;
                 res.body[0].should.have.property("forDate");
-                res.body[0].should.have.property("name").equal("dummyName");
-                res.body[0].should.have.property("body").equal("dummy body baby");
+                res.body[0].should.have.property("name");
+                res.body[0].should.have.property("body");
                 res.body[0].should.have.property("score");
                 done();
             });
@@ -85,6 +85,25 @@ describe("Question Test" , ()=>{
                 if(err)done(err);
                 res.body.should.be.a('object');
                 res.body.should.have.property('_id').equal(questionId);
+                done();
+            });
+    });
+    
+    it("Patching specific question /question/{id} PATCH",(done)=>{
+        chai.request(app)
+            .patch(`/question/${questionId}`)
+            .set('Authorization',`Bearer ${authToken}`)
+            .set('content-type', 'multipart/form-data')
+            .field('name','newDummy')
+            .field('body','new Dummy body')
+            .attach('testGenerator',fs.readFileSync('./test/dummyFiles/testGen2.cpp'))
+            .end((err,res)=>{
+                if(err) done(err);
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('message').equal("successfully updated");
+                res.body.updatedQuestion.should.have.property('name').equal('newDummy');
+                res.body.updatedQuestion.should.have.property('body').equal('new Dummy body');
                 done();
             });
     });
