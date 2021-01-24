@@ -50,6 +50,13 @@ async function deleteData(){
     submits.forEach(submit=>{
          del('./data/user-submits/'+submit);
     });
+    const userData = fs.readdirSync('./data/user-data', { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+    userData.forEach(data=>{
+         del('./data/user-data/'+data);
+    });
+    console.log('deleted userdata')
 }
 dropDB();
 
