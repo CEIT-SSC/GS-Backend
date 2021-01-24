@@ -65,4 +65,20 @@ describe('User Test',()=>{
                 done();
             });
     });
+
+    it('getting specified users /user/{id} GET',done=>{
+        chai.request(app)
+            .get('/user/9831009')
+            .set('Authorization',`Bearer ${authToken}`)
+            .end((err,res)=>{
+                if(err) done(err);
+                res.body.should.be.a('object');
+                res.body.should.have.property('studentNumber');
+                res.body.should.have.property('testCases');
+                res.body.should.have.property('codes');
+                done();
+            });
+    });
+
+    
 });
