@@ -15,7 +15,7 @@ async function runScript(scriptPath, studentNumber){
 
 function readOutput(filePath){
     const output =fs.readFileSync(filePath, 'utf-8');
-    return output;
+    return output.trim();
 }
 
 async function saveFile(directory,name,content){
