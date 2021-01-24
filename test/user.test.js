@@ -34,13 +34,35 @@ describe('User Test',()=>{
         }).catch(err=>done(err));
     });
 
-    // it('Creating new user /user/ POST',done=>{
-    //     chai.request(app)
-    //         .get('/user/')
-    //         .set('Authorization',`Bearer ${authToken}`)
-    //         .end((err,res)=>{
-    //             if(err) done(err);
-    //             res.body.should.be.a('object');
-    //         });
-    // });
+    it('Creating new user /user/ POST',done=>{
+        User.findOneAndDelete({studentNumber:"9831009"}).then(()=>{
+            chai.request(app)
+            .post('/user/')
+            .send({
+                studentNumber:"9831009",
+                password:"dummyPass2bruh"
+            })
+            .end((err,res)=>{
+                if(err) done(err);
+                res.should.have.status(201);
+                res.body.should.be.a('object');
+                res.body.should.have.property('token');
+                res.body.should.have.property('user');
+                done();
+            });
+        });
+    });
+    it('getting all users /user/ GET',done=>{
+        chai.request(app)
+            .get('/user/')
+            .set('Authorization',`Bearer ${authToken}`)
+            .end((err,res)=>{
+                if(err) done(err);
+                res.body.should.be.a('array');
+                res.body[0].should.have.property('studentNumber');
+                res.body[0].should.have.property('testCases');
+                res.body[0].should.have.property('codes');
+                done();
+            });
+    });
 });
