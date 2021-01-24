@@ -79,6 +79,22 @@ describe('User Test',()=>{
                 done();
             });
     });
+    
+    it('getting specified users /user/{id} GET',done=>{
+        chai.request(app)
+            .patch('/user/9831009')
+            .set('Authorization',`Bearer ${authToken}`)
+            .send({
+                studentNumber: "9831010"
+            })
+            .end((err,res)=>{
+                if(err) done(err);
+                res.body.should.be.a('object');
+                res.body.should.have.property('user');
+                res.body.should.have.property('message').equal("user updated successfully");
+                done();
+            });
+    });
 
     
 });
