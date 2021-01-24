@@ -80,8 +80,9 @@ describe('User Test',()=>{
             });
     });
     
-    it('getting specified users /user/{id} GET',done=>{
-        chai.request(app)
+    it('patching specified users /user/{id} GET',done=>{
+        User.findOneAndRemove({studentNumber:"9831010"}).then(()=>{
+            chai.request(app)
             .patch('/user/9831009')
             .set('Authorization',`Bearer ${authToken}`)
             .send({
@@ -89,12 +90,47 @@ describe('User Test',()=>{
             })
             .end((err,res)=>{
                 if(err) done(err);
+                res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('user');
                 res.body.should.have.property('message').equal("user updated successfully");
                 done();
             });
+        });
     });
-
+    let userAuth;
+    it('login /user/login POST',done=>{
+        chai.request(app)
+            .post('/user/login')
+            .send({
+                studentNumber: "9831010",
+                password: 'dummyPass2bruh'
+            })
+            .end((err,res)=>{
+                if(err) done(err);
+                res.body.should.be.a('object');
+                res.body.should.have.property('user');
+                res.body.should.have.property('token');
+                userAuth=res.body.token;
+                done();
+            });
+    });
+    it('changePass /user/changepass POST',done=>{
+        chai.request(app)
+            .post('/user/me/changepass')
+            .set('Authorization',`Bearer ${userAuth}`)
+            .send({
+                password: "dummyPass3bruh",
+            })
+            .end((err,res)=>{
+                if(err) done(err);
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('message').equal("password updated successfully");
+                res.body.should.have.property('user');
+                done();
+            });
+    });
+    
     
 });
