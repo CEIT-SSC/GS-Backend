@@ -32,7 +32,7 @@ describe("Question Test" , ()=>{
             });
         });
     });
-    after('droping dummy superusers',function(done){
+    after('droping dummy question admin',function(done){
         QuestionAdmin.findOneAndRemove({username: 'dumbAdmin'}).then(result=>{
             done();
         }).catch(err=>done(err));
