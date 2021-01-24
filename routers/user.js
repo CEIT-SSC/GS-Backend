@@ -45,9 +45,7 @@ router.post("/",async(req,res)=>{
         //sending welcome email or sth?
         //generating auth and redirect to me user/me page
         
-        await user.save().then(()=>{
-            logger.info("new user created");
-        })
+        await user.save();
         
         const token = await user.generateAuthToken();
         if(!token) throw new Error("token couldn't be generated");
@@ -92,10 +90,11 @@ router.patch("/:studentNumber",authenticateSuperUser,async(req,res)=>{
         Object.keys(req.body).forEach((fieldToUpdate)=>{
             user[fieldToUpdate] = req.body[fieldToUpdate];
         });
-        await user.save().then(()=>{
-            logger.info("user updated successfully")
-        })
-        res.send(user);
+        await user.save();
+        res.send({
+            user,
+            message: "user updated successfully"
+        });
     }catch(err){
         res.status(500).send({
             message:err.message,
@@ -142,7 +141,7 @@ router.post("/me/changepass",authenticateUser,async (req,res)=>{
         await user.save();
         res.send({user,
             message: "password updated successfully"
-        })
+        });
     }catch(err){
         res.status(500).send({
             error:err.message
