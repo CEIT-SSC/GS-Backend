@@ -169,13 +169,16 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
 
         const user= req.user;
         const questionId= req.body.questionID;
-        //possible bug : user can submit to non defined question id 
+
         const codePath = `./data/user-submits/${user.studentNumber}/
             ${questionId}/${req.files.code[0].originalname}`;
         const result = readOutput(req.files.output[0].path);
         if(!result) throw new Error("couldn't read uploaded output");
 
         const questionData = user.testCases.find(obj=> String(obj.forQuestion)===String(questionId));
+        if(!questionData){
+            throw new Error(" couldn't find question with specified id");
+        }
         const correctOutputPath=questionData.correctOutput;
         const correctOutput = readOutput(correctOutputPath);
 
