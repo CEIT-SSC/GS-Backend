@@ -33,7 +33,6 @@ describe('User Test',()=>{
             done();
         }).catch(err=>done(err));
     });
-
     it('Creating new user /user/ POST',done=>{
         User.findOneAndDelete({studentNumber:"9831009"}).then(()=>{
             chai.request(app)
@@ -115,7 +114,7 @@ describe('User Test',()=>{
                 done();
             });
     });
-    it('changePass /user/changepass POST',done=>{
+    it('changePass /user/me/changepass POST',done=>{
         chai.request(app)
             .post('/user/me/changepass')
             .set('Authorization',`Bearer ${userAuth}`)
@@ -128,6 +127,18 @@ describe('User Test',()=>{
                 res.body.should.be.a('object');
                 res.body.should.have.property('message').equal("password updated successfully");
                 res.body.should.have.property('user');
+                done();
+            });
+    });
+
+    it('getuserQuestions /user/me/getquestion GET',done=>{
+        chai.request(app)
+            .get('/user/me/getquestion')
+            .set('Authorization',`Bearer ${userAuth}`)
+            .end((err,res)=>{
+                if(err) done(err);
+                res.should.have.status(200);
+                res.body.should.be.a('array');
                 done();
             });
     });
