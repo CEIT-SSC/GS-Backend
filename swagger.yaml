@@ -310,20 +310,20 @@ paths:
         description: "superuser authentication"
         type: "string"
       responses:
-        default:
+        "200":
           description: "successful operation"
           schema:
             type: "object"
             example:
-              studentNumber: "the student number of user"
-              testcase: 
-                - forQuestion: "the question for"
-                  input: "question inputs"
-                  output: " the question output"
-              codes:
-                - forQuestion: "the questionFor"
-                  code: "the path of uploaded code"
-                  
+              - studentNumber: "the student number of user"
+                testcase: 
+                  - forQuestion: "the question for"
+                    input: "question inputs"
+                    output: " the question output"
+                codes:
+                  - forQuestion: "the questionFor"
+                    code: "the path of uploaded code"
+                    
               
         "500":
           description: "error will be returned"
@@ -351,9 +351,16 @@ paths:
           schema:
             type: "object"
             example:
-            - studentNumber: "user student number"
-              question : "[empty list representing current questions]"
-            - token: "user token"
+              user:
+                studentNumber: "the student number of user"
+                testcase: 
+                  - forQuestion: "the question for"
+                    input: "question inputs"
+                    output: " the question output"
+                codes:
+                  - forQuestion: "the questionFor"
+                    code: "the path of uploaded code"
+              token: "user token"
         "500":
           description: "error will be returned"
   /user/{studentNumber}:
@@ -377,9 +384,14 @@ paths:
           schema:
             type: "object"
             example:
-              studentNumber: "user student number"
-              password: "hashed password"
-              question : "[list representing current questions]"
+              studentNumber: "the student number of user"
+              testcase: 
+                - forQuestion: "the question for"
+                  input: "question inputs"
+                  output: " the question output"
+              codes:
+                - forQuestion: "the question For"
+                  code: "the path of uploaded code"
         "500":
           description: "error will be returned"
     patch:
@@ -418,9 +430,16 @@ paths:
           schema:
             type: "object"
             example:
-              studentNumber: "user student number"
-              password: "hashed password"
-              question : "[list representing current questions]"
+              user:
+                studentNumber: "the student number of user"
+                testcase: 
+                  - forQuestion: "the question for"
+                    input: "question inputs"
+                    output: " the question output"
+                codes:
+                  - forQuestion: "the questionFor"
+                    code: "the path of uploaded code"
+              message: "user updated successfully"
         "500":
           description: "error will be displayed "
     delete:
@@ -448,9 +467,14 @@ paths:
             type: "object"
             example:
               removedUser: 
-                studentNumber: "user student number"
-                testCases: "[list representing user testcases]"
-                codes : "[list representing current questions]"
+                studentNumber: "the student number of user"
+                testcase: 
+                  - forQuestion: "the question for"
+                    input: "question inputs"
+                    output: " the question output"
+                codes:
+                  - forQuestion: "the questionFor"
+                    code: "the path of uploaded code"
               message: "user successfully removed"
         "500":
           description: "error will be returned"
