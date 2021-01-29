@@ -917,9 +917,14 @@ paths:
           description: "returns list of info objects"
           schema: 
             example:
-              - studentNumber: "studentNumber of user"
-                penalty : "submittedDate - forDateOfQeustion"
-                score: "the score of user"
+              newbies: 
+                - studentNumber: "99 ie guys"
+                  penalty: "submittedDate - questionCreated date"
+                  score : "studentScore"
+              notNoob:
+                - studentNumber: "non 99 ie guys"
+                  penalty: "submittedDate - questionCreated date"
+                  score : "studentScore"
 definitions:
   SuperUser:
     type: "object"
