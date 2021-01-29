@@ -48,6 +48,7 @@ describe("Question Test" , ()=>{
             .field("body","dummy body baby")
             .field("examples",'[{"input":"dummyIn","output":"dummyOut"}]')
             .field("score",50)
+            .field("isWeb",1)
             .attach("testGenerator",fs.readFileSync("./test/dummyFiles/testGenerator.cpp"),'./test/testG,cpp')
             .attach("answer",fs.readFileSync("./test/dummyFiles/answer.cpp"),'./test/asnwer.cpp')
             .end((err,res)=>{
