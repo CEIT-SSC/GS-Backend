@@ -213,6 +213,10 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
             _id:req.params.id
         });
         if( ! question ) throw new Error(" couldn't find question with specified id");
+        let extName = ".txt" ;
+        if(question.isWeb){
+            extName = ".html"
+        }
         const user=req.user;
         const savedTestCase = user.testCases.find(obj => obj.forQuestion == req.params.id);
         let options={
@@ -220,7 +224,7 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
         }
         if(savedTestCase){
             res.status(200)
-                .sendFile(`./data/user-data/${user.studentNumber}/${req.params.id}/testCase.txt`,options);
+                .sendFile(`./data/user-data/${user.studentNumber}/${req.params.id}/testCase${extName}`,options);
         }else{
             const studentNumber = user.studentNumber;
             const testGeneratorPath = question.testGeneratorPath;
@@ -230,7 +234,7 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
             if (!generatedTestCase) throw new Error ("couldn't create test case");
 
             const testCasePath= await saveFile(`./data/user-data/${studentNumber}/${req.params.id}/`
-            ,'testCase.txt',generatedTestCase.trim());
+            ,`testCase${extName}`,generatedTestCase.trim());
             const correctOutputPath=await saveFile(`./data/user-data/${studentNumber}/${req.params.id}/`,
             'correctOutput.txt',expectedAnswer.trim());
 
@@ -240,7 +244,7 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
                 correctOutput: correctOutputPath
             });
             await user.save();    
-            res.status(200).sendFile(`./data/user-data/${studentNumber}/${req.params.id}/testCase.txt`,options);
+            res.status(200).sendFile(`./data/user-data/${studentNumber}/${req.params.id}/testCase${extName}`,options);
         }
     }catch(err){
         logger.error(err);
