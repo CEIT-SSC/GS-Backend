@@ -39,6 +39,10 @@ const questionSchema= new mongoose.Schema({
     score:{
         type: Number,
         required:true
+    },
+    isWeb:{
+        type: Boolean,
+        required: true
     }
 });
 // TODO toJson 
