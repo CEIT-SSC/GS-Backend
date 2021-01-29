@@ -35,7 +35,7 @@ const removeDir=async (id,folder)=>{
 //create question
 router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fieldstoUpload) , async (req,res)=>{
     try{
-        if(!req.body.name || !req.body.body ||! req.body.score || !req.body.date){
+        if(!req.body.name || !req.body.body ||! req.body.score || !req.body.date || !req.body.isWeb){
             throw new Error("please complete all fields");
         }   
         if(!req.files.testGenerator || !req.files.answer){
@@ -52,7 +52,8 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
             author: req.admin._id,
             testGeneratorPath: req.files.testGenerator[0].path,
             answerPath: req.files.answer[0].path,
-            score:Number(req.body.score)
+            score:Number(req.body.score),
+            isWeb:req.body.isWeb
             
         })
         //bug in deleting folders in unexpected fields
