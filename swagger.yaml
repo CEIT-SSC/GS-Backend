@@ -693,6 +693,10 @@ paths:
         required: true
         description: "the score of question"
         type: "number"
+      - name: "isWeb"
+        in: "formData"
+        required: true
+        type: "boolean"
       - name: "Authorization"
         in: "header"
         required: true
@@ -996,4 +1000,7 @@ definitions:
       score: 
         type: "number"
         example: "score (as number)"
+      isWeb:
+        type: "boolean"
+        example: "1, true, yes / 0, false, no"
 
