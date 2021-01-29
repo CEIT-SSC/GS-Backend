@@ -25,8 +25,11 @@ async function createSuperUser(){
                 useFindAndModify:false,
                 useCreateIndex:true
             });
-    const username=process.argv[2];
-    const password=process.argv[3];
+    const username=process.env.SUPER_NAME;
+    const password=process.env.SUPER_PASS;
+    if(!username || !password ){
+        throw Error ("SUPER_NAME and SUPER_PASS should be added to env variables")
+    }
     const newSuper= new SuperUser({
         username:username,
         password:password,
