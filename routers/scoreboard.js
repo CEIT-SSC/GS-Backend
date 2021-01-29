@@ -9,9 +9,6 @@ router.get("/",async(req,res)=>{
             .then(allUsers => {
                 return allUsers;
             });
-        
-
-
         let allUserData = allUsers.map(user=>{
             let penalty=0;
             let userScore=0;
@@ -33,15 +30,22 @@ router.get("/",async(req,res)=>{
                 return fisrtUser.penalty<=secondUser.penalty?-1:1;
             }else return 1;
         });
-        // console.log(allUsers);
-        res.status(200).send(allUserData)
+        let newbies =[];
+        let notNoob =[];
+        allUserData.forEach(user=>{
+            if(user.studentNumber.startsWith('99')) newbies.push(user);
+            else notNoob.push(user);
+        })
+        res.status(200).send({newbies, notNoob})
     }catch(error){
         res.status(500).send({
             message:error.message
         });
     }
 });
+router.get("/newbies", async (req,res)=>{
 
+});
 
 
 module.exports = router;
