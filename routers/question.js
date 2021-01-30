@@ -184,6 +184,13 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
                 return;
             }
         }
+        const isSolved = user.codes.find(obj=> String(obj.forQuestion)===String(questionId));
+        if(isSolved){
+            res.status(400).send({
+                message: "You already solved this question"
+            });
+            return;
+        }
 
         const codePath = isWeb ? '':`./data/user-submits/${user.studentNumber}/
             ${questionId}/${req.files.code[0].originalname}`;
