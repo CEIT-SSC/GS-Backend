@@ -161,7 +161,7 @@ const submitFields=[
 //submit question
 router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req,res)=>{
     try{
-        if(!req.body.questionID || !req.files.output || !req.files.code){
+        if(!req.body.questionID || !req.files.output ){
             res.status(400).send({
                 message: "please complete all fields"
             });
@@ -170,8 +170,21 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
 
         const user= req.user;
         const questionId= req.body.questionID;
+        //check if question is type web
+        const question = await Question.findById({
+            _id:questionId,
+        });
+        //no need to handle the case if question doesn't exist
+        const isWeb= question.isWeb;
+        if (!isWeb){
+            if(!req.files.code){
+                res.send(400).send({
+                    message: "please add code file"
+                });
+            }
+        }
 
-        const codePath = `./data/user-submits/${user.studentNumber}/
+        const codePath = isWeb ? '':`./data/user-submits/${user.studentNumber}/
             ${questionId}/${req.files.code[0].originalname}`;
         const result = readOutput(req.files.output[0].path);
         if(!result) throw new Error("couldn't read uploaded output");
