@@ -178,9 +178,10 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         const isWeb= question.isWeb;
         if (!isWeb){
             if(!req.files.code){
-                res.send(400).send({
+                res.status(400).send({
                     message: "please add code file"
                 });
+                return;
             }
         }
 
