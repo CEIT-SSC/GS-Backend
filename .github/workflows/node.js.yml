@@ -40,7 +40,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           cd ~/gsBack/GS-Backend
-          docker-compose stop
+          docker-compose down
           git pull origin master
           docker-compose build
           docker-compose up -d
