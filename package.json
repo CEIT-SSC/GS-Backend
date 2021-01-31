@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --timeout 10000",
+    "test": "mocha --timeout 10000 --exit",
     "dev": "NODE_ENV=develompent nodemon index.js",
     "start": "node index.js"
   },
