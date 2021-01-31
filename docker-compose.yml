@@ -1,11 +1,11 @@
 version: "3"
 services: 
-  app:
-    container_name: gs_backend
+  gsback:
+    container_name: gsback
     restart: always
     build: .
     ports:
-      - "3000:3000"
+      - "5000:5000"
     links:
       - mongo
     env_file: 
@@ -16,7 +16,7 @@ services:
     ports:
       - "27017:27017"
     volumes: 
-      - "/home/db/mongo:/data/db"
+      - "/home/ssc/mongo:/data/db"
 networks: 
   default:
     external:
