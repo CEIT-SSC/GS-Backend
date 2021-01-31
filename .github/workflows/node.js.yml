@@ -1,0 +1,46 @@
+name: Node.js CI
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo
+        ports:
+        - 27017:27017
+    env:
+      MONGODB_URL: mongodb://localhost:27017
+      JWT_SECRET: nah123
+      PORT: 5000   
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+
+    - name: install dependencies and test
+      run: |
+        npm install
+        npm test
+        
+  deploy:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+    - name: SSH and deploy node app
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd ~/gsBack/GS-Backend
+          docker-compose stop
+          git pull origin master
+          docker-compose build
+          docker-compose up
