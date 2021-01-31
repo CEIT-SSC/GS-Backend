@@ -11,6 +11,10 @@ jobs:
         image: mongo
         ports:
         - 27017:27017
+    env:
+      MONGODB_URL: http://localhost:27017
+      JWT_SECRET: nah123
+      PORT: 5000   
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js
