@@ -42,7 +42,7 @@ router.post("/",async(req,res)=>{
         });
         if(userFound){
             res.status(406).send({
-                message: "User is already registered."  
+                message: `${req.body.studentNumber} is already registered.`  
             });
         }
         const user= new User({
@@ -50,9 +50,6 @@ router.post("/",async(req,res)=>{
             password: req.body.password
         });
 
-        //sending welcome email or sth?
-        //generating auth and redirect to me user/me page
-        
         await user.save();
         
         const token = await user.generateAuthToken();
