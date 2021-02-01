@@ -37,6 +37,14 @@ router.post("/",async(req,res)=>{
         if(!req.body.studentNumber ||!req.body.password){
             throw new Error("Enter student number and password")
         }
+        const userFound = await User.findOne({
+            studentNumber:req.body.studentNumber
+        });
+        if(userFound){
+            res.status(406).send({
+                message: "User is already registered."  
+            });
+        }
         const user= new User({
             studentNumber: req.body.studentNumber,
             password: req.body.password
@@ -175,52 +183,5 @@ router.get("/me/getquestion/", authenticateUser, async(req,res)=>{
         })
     }
 });
-// router.get("/me/getquestion/:id", authenticateUser,async (req,res)=>{
-//     try{
-//         const question = await Question.findOne({
-//             _id:req.params.id
-//         });
-//         if( ! question ) throw new Error(" couldn't find question with entered id");
 
-
-//         const user = req.user;
-//         const savedTestCase = user.testCases.find(obj => obj.forQuestion == req.params.id);
-        // if(savedTestCase){
-        //     res.status(200).send({
-        //         question,
-        //         testCases: savedTestCase.input
-        //     });
-
-        // }else{
-
-        //     const studentNumber = user.studentNumber;
-        //     const testGeneratorPath = question.testGeneratorPath;
-            // const answerPath = question.answerPath;
-            // const generatedTestCase = await runScript(testGeneratorPath,studentNumber);
-            // const excpectedAnswer = await runScript(answerPath, studentNumber); // NOT SURE
-            // if (!generatedTestCase) throw new Error ("couldn't create test case");
-            // user.testCases = user.testCases.concat({
-            //     forQuestion: req.params.id,
-            //     input: generatedTestCase,
-            //     // the output should be changed
-            //     correctOutput: excpectedAnswer.trim()
-            // });
-            // await user.save();
-    
-//             // await saveTestCase(req.params.id,generatedTestCase); //QUSTION ? IS IT NEEDED??
-    
-//             res.status(200).send({
-//                 question,
-//                 testCases: generatedTestCase
-//             });
-//         }
-
-
-//     }catch(err){
-//         logger.error(err);
-//         res.send({
-//             error :err
-//         })
-//     }
-// })
 module.exports=router;
