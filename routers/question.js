@@ -10,9 +10,12 @@ const { uploadTestCase,
       generateIdAndDir,
       submittion,
         patchHandler} = require ("../middlewares/upload");
-const {runScript} = require("../utils/utils");
-// const {authGetAccess} = require ("../middlewares/questionAccessAuth");
-// const { authenticateUser } = require("../middlewares/userAuth");
+
+const {
+    getTestCase,
+    getAnswer
+    } = require("../utils/utils");
+
 const { readOutput ,
         saveFile } = require("../utils/utils");
 
@@ -250,8 +253,8 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
             const studentNumber = user.studentNumber;
             const testGeneratorPath = question.testGeneratorPath;
             const answerPath = question.answerPath;
-            const generatedTestCase = await runScript(testGeneratorPath,studentNumber);
-            const expectedAnswer = await runScript(answerPath, studentNumber); // NOT SURE
+            const generatedTestCase = await getTestCase(testGeneratorPath,studentNumber);
+            const expectedAnswer = await getAnswer(answerPath, generatedTestCase); //correctOutput == expected answer
             if (!generatedTestCase) throw new Error ("couldn't create test case");
 
             const testCasePath= await saveFile(`./data/user-data/${studentNumber}/${req.params.id}/`
