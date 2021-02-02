@@ -5,8 +5,7 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 SOLUTION_ADDRESS=$1
-INPUT=$(< /dev/stdin)
-
+read -d '' INPUT 
 file=$(ls $SOLUTION_ADDRESS)
 FILEDIR=${SOLUTION_ADDRESS%/*}
 FILENAME=${FILEDIR%.*}
