@@ -178,6 +178,11 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
             _id:questionId,
         });
         //no need to handle the case if question doesn't exist
+        if(!question){
+            res.status(400).send({
+                message: "couldn't find a question with specified id"
+            });
+        }
         const isWeb= question.isWeb;
         if (!isWeb){
             if(!req.files.code){
@@ -202,11 +207,13 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
 
         const questionData = user.testCases.find(obj=> String(obj.forQuestion)===String(questionId));
         if(!questionData){
-            throw new Error(" couldn't find question with specified id");
+            throw new Error("You should get testcase before submitting");
         }
         const correctOutputPath=questionData.correctOutput;
         const correctOutput = readOutput(correctOutputPath);
-
+        //Debug
+        console.log(questionId);
+        console.log(req.body.questionID);
         if(correctOutput === result){
             user.codes = user.codes.concat({
                 forQuestion: questionId,
