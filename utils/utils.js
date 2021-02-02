@@ -3,13 +3,23 @@ const { stderr } = require("process");
 const config = require ("./config");
 const logger = require ('./logger');
 const fs = require ("fs");
-async function runScript(scriptPath, studentNumber){
+async function getTestCase(scriptPath, studentNumber){
 
-    const script= await spawnSync(`sh`,['./testcase.sh',scriptPath,studentNumber]);
+    const script= await spawnSync(`sh`,['./scripts/testcase.sh',scriptPath,studentNumber]);
     if(!script.status){
         return script.stdout.toString();
     }else{
         logger.error("couldn't create test cases for user");
+    }
+}
+
+async function getAnswer(scriptPath, generatedTestCase){
+
+    const script= await spawnSync(`sh`,['./scripts/correctOutput.sh',scriptPath],{input : generatedTestCase});
+    if(!script.status){
+        return script.stdout.toString();
+    }else{
+        logger.error("can't get the answer");
     }
 }
 
@@ -29,7 +39,8 @@ async function saveFile(directory,name,content){
 }
 
 module.exports = {
-    runScript,
+    getTestCase,
     readOutput,
-    saveFile
+    saveFile,
+    getAnswer
 }
