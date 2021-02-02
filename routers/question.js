@@ -211,9 +211,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         }
         const correctOutputPath=questionData.correctOutput;
         const correctOutput = readOutput(correctOutputPath);
-        //Debug
-        console.log(questionId);
-        console.log(req.body.questionID);
+        
         if(correctOutput === result){
             user.codes = user.codes.concat({
                 forQuestion: questionId,
@@ -263,7 +261,6 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
             const generatedTestCase = await getTestCase(testGeneratorPath,studentNumber);
             const expectedAnswer = await getAnswer(answerPath, generatedTestCase); //correctOutput == expected answer
             if (!generatedTestCase) throw new Error ("couldn't create test case");
-
             const testCasePath= await saveFile(`./data/user-data/${studentNumber}/${req.params.id}/`
             ,`testCase${extName}`,generatedTestCase.trim());
             const correctOutputPath=await saveFile(`./data/user-data/${studentNumber}/${req.params.id}/`,
