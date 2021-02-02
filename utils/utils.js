@@ -16,8 +16,7 @@ async function getTestCase(scriptPath, studentNumber){
 async function getAnswer(scriptPath, generatedTestCase){
     const script= await spawnSync(`/bin/bash`,['./scripts/correctOutput.sh',scriptPath],{input: generatedTestCase});
     if(!script.status){
-        console.log(script.stdout.toString())
-        return script.stdout.toString();
+        return script.stdout.toString().trim();
     }else{
         console.log(script.stderr.toString().trim())
         throw Error("can't get the answer");
