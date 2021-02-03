@@ -4,7 +4,6 @@ const {authenticateSuperUser} = require("../middlewares/superUserAuth");
 const logger = require("../utils/logger");
 const { authenticateAdmin } = require("../middlewares/questionAdminAuth");
 const { authenticateUser } = require("../middlewares/userAuth");
-const { runScript , saveTestCase } = require ("../utils/utils");
 const Question = require("../models/Question");
 
 router.get("/",authenticateSuperUser,async(req,res)=>{
@@ -44,6 +43,7 @@ router.post("/",async(req,res)=>{
             res.status(406).send({
                 message: `${req.body.studentNumber} is already registered.`  
             });
+            return;
         }
         const user= new User({
             studentNumber: req.body.studentNumber,

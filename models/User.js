@@ -7,7 +7,6 @@ const userSchema= new mongoose.Schema({
     studentNumber:{
         type:String,
         unique:true,
-        sparse:true,
         required:true,
         validate(value){
             if(!validator.isNumeric(value)||(value.length<7 && value.length>8)){
