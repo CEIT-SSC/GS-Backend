@@ -39,13 +39,11 @@ router.get("/",async(req,res)=>{
         res.status(200).send({newbies, notNoob})
     }catch(error){
         res.status(500).send({
-            message:error.message
+            error:error.message
         });
     }
 });
-router.get("/newbies", async (req,res)=>{
 
-});
 
 
 module.exports = router;
