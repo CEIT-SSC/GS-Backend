@@ -1,8 +1,14 @@
 const info= (...parameters)=>{
-    console.log(parameters);
+    if(process.env.NODE_ENV!='production')
+    {
+        console.log(parameters);
+    }
 }
 const error= (...parameters)=>{
-    console.log(parameters);
+    if(process.env.NODE_ENV!='production')
+    {
+        console.log(parameters);
+    }
 }
 
 module.exports={
