@@ -25,7 +25,9 @@ router.post("/logout",authenticateSuperUser,async (req,res)=>{
             message:"successfully logged out"
         }); 
     }catch(error){
-        res.status(500).send();
+        res.status(500).send({
+            error: "couldn't logout"
+        });
     }
 });
 
