@@ -183,6 +183,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
             res.status(400).send({
                 message: "please complete all fields"
             });
+            await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
             return;
         }
 
@@ -194,9 +195,11 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         });
         //no need to handle the case if question doesn't exist
         if(!question){
-            res.status(400).send({
+            res.status(404).send({
                 message: "couldn't find a question with specified id"
             });
+            await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
+            return;
         }
         const isWeb= question.isWeb;
         if (!isWeb){
@@ -204,6 +207,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
                 res.status(400).send({
                     message: "please add code file"
                 });
+                await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
                 return;
             }
         }
@@ -212,6 +216,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
             res.status(400).send({
                 message: "You already solved this question"
             });
+            await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
             return;
         }
 
@@ -238,11 +243,9 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         }else{
             await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
             res.status(406).send({
-                message: "output is wrong . try again "
+                message: "output is wrong. try again "
             })
         }
-
-        // possibly doing other things in here
     }catch(err){
         await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
         logger.error(err);
