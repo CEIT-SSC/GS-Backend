@@ -96,7 +96,7 @@ userSchema.statics.findByCredentials = async (studentNumber, password)=>{
     const user= await User.findOne({studentNumber});
 
     if(!user){
-        throw new Error("failded to identify user");
+        throw new Error("failed to identify user");
     }
     const isPassMatch = await bcrypt.compare(password,user.password);
     // console.log(isPassMatch)

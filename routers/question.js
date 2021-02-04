@@ -129,7 +129,7 @@ router.patch("/:id", authenticateAdmin, patchHandler.fields(fieldstoUpload), asy
             }else{
                 question[fieldToUpdate]=req.body[fieldToUpdate];
             }
-    }
+        }
     await question.save()
     logger.info("question updated successfully");
     res.status(200).send({

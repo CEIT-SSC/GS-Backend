@@ -22,11 +22,11 @@ router.get("/:studentNumber",authenticateSuperUser,async(req,res)=>{
         const user = await User.findOne({
             studentNumber:req.params.studentNumber
         });
-        if(!user) throw new Error("couldn't find user with entered student number");
+        if(!user) throw new Error("couldn't find user");
         res.send(user);
     }catch(error) {
-        res.status(500).send({
-            message:error.message
+        res.status(404).send({
+            error:error.message
         })
     }
 });
@@ -34,14 +34,17 @@ router.get("/:studentNumber",authenticateSuperUser,async(req,res)=>{
 router.post("/",async(req,res)=>{
     try{
         if(!req.body.studentNumber ||!req.body.password){
-            throw new Error("Enter student number and password")
+            res.status(400).send({
+                error: "Enter student number and password"  
+            });
+            return;
         }
         const userFound = await User.findOne({
             studentNumber:req.body.studentNumber
         });
         if(userFound){
             res.status(406).send({
-                message: `${req.body.studentNumber} is already registered.`  
+                error: `${req.body.studentNumber} is already registered.`  
             });
             return;
         }
@@ -57,7 +60,7 @@ router.post("/",async(req,res)=>{
         res.status(201).send({user,token});
     }catch(error){
         res.status(500).send({
-            message:error.message
+            error:error.message
         })
     }
 });
@@ -67,7 +70,14 @@ router.delete("/:studentNumber",authenticateSuperUser,async(req,res)=>{
     try{
         await User.findOneAndRemove({
             studentNumber:req.params.studentNumber
-        }).then(removedUser=>{
+        },(err,removedUser)=>{
+            if(err) throw err;
+            else if(!removedUser){
+                res.status(404).send({
+                    error: "couldn't find user"
+                });
+                return;
+            }
             logger.info("user successfully removed");
             res.send({
                 removedUser,
@@ -75,7 +85,7 @@ router.delete("/:studentNumber",authenticateSuperUser,async(req,res)=>{
         });
     }catch(err){
         res.status(500).send({
-            message:err.message
+            error:err.message
         });
     }
 })
@@ -88,7 +98,7 @@ router.patch("/:studentNumber",authenticateSuperUser,async(req,res)=>{
         })
         if(!user){
             res.status(404).send({
-                message:"couldn't find user with entered student number"
+                error:"couldn't find user"
             });
             return;
         }
@@ -102,22 +112,27 @@ router.patch("/:studentNumber",authenticateSuperUser,async(req,res)=>{
         });
     }catch(err){
         res.status(500).send({
-            message:err.message,
-            result:"unable to patch user"
+            error:"unable to patch user",
+            detail:err.message
         })
     }
 });
 //login 
 router.post("/login",async(req,res)=>{
     try{
-        if(!req.body.studentNumber || !req.body.password) throw new Error("You should complete all fields");
+        if(!req.body.studentNumber || !req.body.password){
+            res.status(400).send({
+                error:"You should complete all fields"
+            });
+            return;
+        } 
         const user = await User.findByCredentials(req.body.studentNumber,req.body.password);
         const token = await user.generateAuthToken();
 
         res.status(200).send({user,token});
     }catch(err){
         logger.error(err);
-        res.status(400).send({
+        res.status(500).send({
                 error:err.message
             }
         )
