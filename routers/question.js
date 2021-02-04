@@ -39,13 +39,14 @@ const removeDir=async (id,folder)=>{
 router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fieldstoUpload) , async (req,res)=>{
     try{
         //checking request fields
-        if(!req.body.name || !req.body.body ||! req.body.score || !req.body.date || !req.body.isWeb){
-            throw new Error("please complete all fields");
+        if(!req.body.name || !req.body.body ||! req.body.score || !req.body.date || !req.body.isWeb
+           || !req.files.testGenerator || !req.files.answer){
+            res.status(400).send({
+                error:"please complete all fields"
+            })
+            return;
         }   
-        if(!req.files.testGenerator || !req.files.answer){
-            throw new Error("both testGenerator and answer files should be send")
-        }
-       
+
         //create and save question 
         const question= new Question({
             _id:req.objectId,
@@ -67,9 +68,8 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
     }catch(err){
         await removeDir(req.objectId,'questions');
         logger.error(err.message);
-        res.status(400).send({
+        res.status(500).send({
             error:"couldn't save question",
-            details:err.message
         });
     }
 
@@ -95,14 +95,14 @@ router.get("/:id",authenticateAdmin, async(req,res)=>{
         });
         if(!question){
             res.status(404).send({
-                message:"Couldnt find requested question"
+                error:"Couldnt find requested question"
             });
             return;
         } 
         res.status(200).send(question);
     }catch(err){
         res.status(500).send({
-            message:err.message
+            error:err.message
         })
     }
 });
@@ -114,7 +114,7 @@ router.patch("/:id", authenticateAdmin, patchHandler.fields(fieldstoUpload), asy
         });
         if(!question){
             res.status(404).send({
-                message:"Couldnt find requested question"
+                error:"Couldnt find requested question"
             });
             return;
         } 
@@ -155,7 +155,7 @@ router.delete("/:id",authenticateAdmin,async (req,res)=>{
                 throw err;
             }else if(!removedQuestion){
                 res.status(404).send({
-                    message: "couldn't find requested question"
+                    error: "couldn't find requested question"
                 });
                 return;
             }
@@ -168,7 +168,7 @@ router.delete("/:id",authenticateAdmin,async (req,res)=>{
     }catch(err){
         logger.error(err.message);
         res.status(500).send({
-            message: err.message
+            error: err.message
         });
     }
 });
@@ -181,7 +181,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
     try{
         if(!req.body.questionID || !req.files.output ){
             res.status(400).send({
-                message: "please complete all fields"
+                error: "please complete all fields"
             });
             await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
             return;
@@ -196,7 +196,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         //no need to handle the case if question doesn't exist
         if(!question){
             res.status(404).send({
-                message: "couldn't find a question with specified id"
+                error: "couldn't find a question with specified id"
             });
             await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
             return;
@@ -205,7 +205,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         if (!isWeb){
             if(!req.files.code){
                 res.status(400).send({
-                    message: "please add code file"
+                    error: "please add code file"
                 });
                 await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
                 return;
@@ -214,7 +214,7 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         const isSolved = user.codes.find(obj=> String(obj.forQuestion)===String(questionId));
         if(isSolved){
             res.status(400).send({
-                message: "You already solved this question"
+                error: "You already solved this question"
             });
             await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
             return;
@@ -243,14 +243,14 @@ router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req
         }else{
             await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
             res.status(406).send({
-                message: "output is wrong. try again "
+                error: "output is wrong. try again "
             })
         }
     }catch(err){
         await removeDir(`${req.user.studentNumber}/${req.body.questionID}`,"user-submits");
         logger.error(err);
         res.status(500).send(
-           { message:err.message}
+           { error:err.message}
         )
     }
 });
@@ -261,7 +261,7 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
         });
         if( ! question ) {
             res.status(404).send({
-                message: "Couldn't find question with specified id"
+                error: "Couldn't find question with specified id"
             });
             return;
         }
@@ -306,7 +306,7 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
     }catch(err){
         logger.error(err);
         res.send({
-            message:err.message
+            error:err.message
         });
     }
 });
