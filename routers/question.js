@@ -35,9 +35,10 @@ const removeDir=async (id,folder)=>{
     }
 }
 
-//create question
+
 router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fieldstoUpload) , async (req,res)=>{
     try{
+        //checking request fields
         if(!req.body.name || !req.body.body ||! req.body.score || !req.body.date || !req.body.isWeb){
             throw new Error("please complete all fields");
         }   
@@ -45,7 +46,7 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
             throw new Error("both testGenerator and answer files should be send")
         }
        
-        //TODO :date should be handeled
+        //create and save question 
         const question= new Question({
             _id:req.objectId,
             forDate:new Date(Number(req.body.date)),
@@ -58,26 +59,25 @@ router.post("/", authenticateAdmin , generateIdAndDir ,uploadTestCase.fields(fie
             score:Number(req.body.score),
             isWeb:req.body.isWeb
             
-        })
-        //bug in deleting folders in unexpected fields
-        
-        await question.save().then(()=>{
-            logger.info("question saved successfully");
-        })
-        delete question.examples[0]._id;
+        });
         await question.save();
+        
+        //sending question 
         res.status(201).send(question);
     }catch(err){
         await removeDir(req.objectId,'questions');
         logger.error(err.message);
-        res.status(400).send({error:err.message});
+        res.status(400).send({
+            error:"couldn't save question",
+            details:err.message
+        });
     }
 
 });
-//get questions
+
 router.get("/", authenticateAdmin, async(req,res)=>{
     try{
-        //forDates should be handled
+        //getting all questions and sending them 
         const questions = await Question.find({});
         res.status(200).send(questions);
     }catch(err){
@@ -87,13 +87,18 @@ router.get("/", authenticateAdmin, async(req,res)=>{
         });
     }
 });
-//get specific question
+
 router.get("/:id",authenticateAdmin, async(req,res)=>{
     try{
         const question = await Question.findById({
             _id:req.params.id
         });
-        if(!question) throw new Error("Couldnt find requested question");
+        if(!question){
+            res.status(404).send({
+                message:"Couldnt find requested question"
+            });
+            return;
+        } 
         res.status(200).send(question);
     }catch(err){
         res.status(500).send({
@@ -106,25 +111,27 @@ router.patch("/:id", authenticateAdmin, patchHandler.fields(fieldstoUpload), asy
     try{
         const question = await Question.findOne({
             _id:req.params.id
-        }).catch(err=>{
-            //customize errors
-            throw new Error("couldn't find the question");
-        })
-    for(let fieldToUpdate in req.body){
-        if(fieldToUpdate=== "examples"){
-            const exampleList= JSON.parse(req.body.examples);
-            question.examples=[];
-            await question.save();
-            for(let example of exampleList){
-                question.examples.push(example);
+        });
+        if(!question){
+            res.status(404).send({
+                message:"Couldnt find requested question"
+            });
+            return;
+        } 
+        for(let fieldToUpdate in req.body){
+            if(fieldToUpdate=== "examples"){
+                const exampleList= JSON.parse(req.body.examples);
+                question.examples=[];
+                await question.save();
+                for(let example of exampleList){
+                    question.examples.push(example);
+                }
+            }else{
+                question[fieldToUpdate]=req.body[fieldToUpdate];
             }
-        }else{
-            question[fieldToUpdate]=req.body[fieldToUpdate];
-        }
     }
-    await question.save().then(()=>{
-        logger.info("question updated successfully");
-    })
+    await question.save()
+    logger.info("question updated successfully");
     res.status(200).send({
         updatedQuestion:question,
         message:"successfully updated"});
@@ -141,9 +148,17 @@ router.patch("/:id", authenticateAdmin, patchHandler.fields(fieldstoUpload), asy
 //delete question
 router.delete("/:id",authenticateAdmin,async (req,res)=>{
     try{
-        await Question.findOneAndRemove({
+        Question.findOneAndRemove({
             _id:req.params.id
-        }).then(removedQuestion=>{
+        },(err,removedQuestion)=>{
+            if(err){
+                throw err;
+            }else if(!removedQuestion){
+                res.status(404).send({
+                    message: "couldn't find requested question"
+                });
+                return;
+            }
             logger.info("question successfully removed");
             removeDir(removedQuestion._id,"questions");
             res.status(200).send({
