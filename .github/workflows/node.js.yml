@@ -41,6 +41,7 @@ jobs:
         script: |
           cd ~/gsBack/GS-Backend
           docker-compose down
+          git stash
           git pull origin master
           docker-compose build
           docker-compose up -d
