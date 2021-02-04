@@ -20,7 +20,7 @@ const userSchema= new mongoose.Schema({
         required: true,
         validate(value){
             if(validator.isNumeric(value) || validator.isAlpha(value)){
-                throw new Error("رمز عبور ضعیف می باشد")
+                throw new Error("رمز عبور باید ترکیبی از حروف و اعداد باشد")
             }
             if(value.length<8){
                 throw new Error("رمز عبور باید بیشتر از ۸ کاراکتر باشد");
