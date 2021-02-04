@@ -106,7 +106,7 @@ router.get("/:id",authenticateAdmin, async(req,res)=>{
         })
     }
 });
-//update question
+
 router.patch("/:id", authenticateAdmin, patchHandler.fields(fieldstoUpload), async(req,res)=>{
     try{
         const question = await Question.findOne({
@@ -145,7 +145,7 @@ router.patch("/:id", authenticateAdmin, patchHandler.fields(fieldstoUpload), asy
     }
 
 });
-//delete question
+
 router.delete("/:id",authenticateAdmin,async (req,res)=>{
     try{
         Question.findOneAndRemove({
@@ -176,7 +176,7 @@ const submitFields=[
     {name:'code', maxCount:1},
     {name:'output', maxCount:1}
 ]
-//submit question
+
 router.post("/submit",authenticateUser,submittion.fields(submitFields),async(req,res)=>{
     try{
         if(!req.body.questionID || !req.files.output ){
@@ -259,7 +259,13 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
         const question = await Question.findOne({
             _id:req.params.id
         });
-        if( ! question ) throw new Error(" couldn't find question with specified id");
+        if( ! question ) {
+            res.status(404).send({
+                message: "Couldn't find question with specified id"
+            });
+            return;
+        }
+
         let extName = ".txt" ;
         if(question.isWeb){
             extName = ".html"
@@ -273,12 +279,17 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
             res.status(200)
                 .sendFile(`./data/user-data/${user.studentNumber}/${req.params.id}/testCase${extName}`,options);
         }else{
+            //
             const studentNumber = user.studentNumber;
             const testGeneratorPath = question.testGeneratorPath;
             const answerPath = question.answerPath;
+            //generating testcase and correctoutput
             const generatedTestCase = await getTestCase(testGeneratorPath,studentNumber);
             const expectedAnswer = await getAnswer(answerPath, generatedTestCase); //correctOutput == expected answer
-            if (!generatedTestCase) throw new Error ("couldn't create test case");
+
+            // error in testcase and answer generation should be handles by their functions
+            // if (!generatedTestCase || !expectedAnswer) throw new Error ("couldn't create test case");
+
             const testCasePath= await saveFile(`./data/user-data/${studentNumber}/${req.params.id}/`
             ,`testCase${extName}`,generatedTestCase.trim());
             const correctOutputPath=await saveFile(`./data/user-data/${studentNumber}/${req.params.id}/`,
@@ -299,5 +310,5 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
         });
     }
 });
-//getting specific question with specified testcase
+
 module.exports=router;
