@@ -10,6 +10,8 @@ services:
       - mongo
     env_file: 
       - ./.env
+    volumes:
+      - "/home/ssc/gsData:data/"
   mongo:
     container_name: mongo
     image: mongo
