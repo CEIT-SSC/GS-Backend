@@ -9,7 +9,7 @@ router.get("/",async(req,res)=>{
             .then(allUsers => {
                 return allUsers;
             });
-        if(!allUser){
+        if(!allUsers){
             res.status(200).send({
                 newbies:[],
                 notNoob:[]
@@ -19,11 +19,13 @@ router.get("/",async(req,res)=>{
         let allUserData = allUsers.map(user=>{
             let penalty=0;
             let userScore=0;
-            for(let code of user.codes){
-                const forDate= code.forQuestion.forDate;
-                const submittedDate = code.date;
-                penalty = submittedDate-forDate;
-                userScore+=code.forQuestion.score;
+            if(user.codes){
+                for(let code of user.codes){
+                    const forDate= code.forQuestion.forDate;
+                    const submittedDate = code.date;
+                    penalty = submittedDate-forDate;
+                    userScore+=code.forQuestion.score;
+                }
             }
             return {
                 studentNumber: user.studentNumber,
