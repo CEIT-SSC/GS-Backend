@@ -9,6 +9,13 @@ router.get("/",async(req,res)=>{
             .then(allUsers => {
                 return allUsers;
             });
+        if(!allUser){
+            res.status(200).send({
+                newbies:[],
+                notNoob:[]
+            });
+            return ;
+        }
         let allUserData = allUsers.map(user=>{
             let penalty=0;
             let userScore=0;
