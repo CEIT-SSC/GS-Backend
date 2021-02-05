@@ -9,6 +9,7 @@ async function getTestCase(scriptPath, studentNumber){
     if(!script.status){
         return script.stdout.toString().trim();
     }else{
+        console.log(script.stderr.toString().trim())
         throw Error("couldn't create test cases for user");
     }
 }
