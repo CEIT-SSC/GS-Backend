@@ -7,6 +7,7 @@ RUN npm install -g pm2
 RUN apt update
 RUN apt install software-properties-common -y
 RUN add-apt-repository ppa:deadsnakes/ppa -y
+RUN apt update
 RUN apt-get install python3.8 -y
 COPY . ./
 EXPOSE 5000
