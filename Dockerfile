@@ -4,6 +4,7 @@ WORKDIR /home/node/app
 COPY package.json ./
 RUN npm install
 RUN npm install -g pm2
+RUN apt update
 RUN apt install software-properties-common
 RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get install python3.8
