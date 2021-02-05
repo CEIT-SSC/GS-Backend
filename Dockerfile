@@ -4,7 +4,7 @@ WORKDIR /home/node/app
 COPY package.json ./
 RUN npm install
 RUN npm install -g pm2
-RUN apt-get install python3
+RUN apt-get install python3.8
 COPY . ./
 EXPOSE 5000
 CMD ["pm2-runtime" , "index.js"]
