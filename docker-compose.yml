@@ -11,7 +11,7 @@ services:
     env_file: 
       - ./.env
     volumes:
-      - "/home/ssc/gsData:data/"
+      - "/home/ssc/gsData:/home/node/app/data"
   mongo:
     container_name: mongo
     image: mongo
