@@ -12,6 +12,11 @@ const userSchema= new mongoose.Schema({
             if(!validator.isNumeric(value)||(value.length<7 && value.length>8)){
                 throw new Error ("شماره دانشجویی نامعتبر است");
             }
+            const studentNumber=Number(value);
+            if(studentNumber<9400000 || studentNumber>=9932000 )
+            {
+                throw new Error("شماره دانشجویی نامعتبر است")
+            }
         }
         
     },
