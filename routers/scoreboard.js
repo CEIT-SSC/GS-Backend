@@ -24,6 +24,9 @@ router.get("/",async(req,res)=>{
                     const forDate= code.forQuestion.forDate;
                     const submittedDate = code.date;
                     penalty = submittedDate-forDate;
+                    if(code.forQuestion.score === 0){
+                        penalty=0;
+                    }
                     userScore+=code.forQuestion.score;
                 }
             }
