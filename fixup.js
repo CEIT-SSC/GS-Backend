@@ -33,8 +33,10 @@ async function fixTheShit(){
                 user.testCases = user.testCases.filter(testcase=>String(testcase.forQuestion)!=questionId);
                 await user.save();
                 //removing from filesystem
-                fs.unlinkSync(`./data/user-data/${studentNumber}/${questionId}/testCase.txt`);
-                fs.unlinkSync(`./data/user-data/${studentNumber}/${questionId}/correctOutput.txt`);
+                if(fs.existsSync(`./data/user-data/${studentNumber}/${questionId}/testCase.txt`))
+                    fs.unlinkSync(`./data/user-data/${studentNumber}/${questionId}/testCase.txt`);
+                if(fs.existsSync(`./data/user-data/${studentNumber}/${questionId}/correctOutput.txt`))
+                    fs.unlinkSync(`./data/user-data/${studentNumber}/${questionId}/correctOutput.txt`);
                 //generating testCase
                 const generatedTestCase = await getTestCase(testGeneratorPath,studentNumber);
                 const expectedAnswer = await getAnswer(answerPath, generatedTestCase);
