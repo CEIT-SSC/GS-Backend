@@ -23,16 +23,16 @@ router.get("/",async(req,res)=>{
                 for(let code of user.codes){
                     const forDate= code.forQuestion.forDate;
                     const submittedDate = code.date;
-                    penalty = submittedDate-forDate;
-                    if(code.forQuestion.score === 0){
-                        penalty=0;
+                    // penalty = submittedDate-forDate;
+                    if(code.forQuestion.score !== 0){
+                        penalty+=submittedDate-forDate;
                     }
                     userScore+=code.forQuestion.score;
                 }
             }
             return {
                 studentNumber: user.studentNumber,
-                penalty: penalty,
+                penalty: Math.floor(penalty/1000),
                 score: userScore
             }
         });
