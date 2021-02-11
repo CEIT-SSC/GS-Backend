@@ -1,5 +1,6 @@
 const router = require ("express").Router();
 const Question = require ("../models/Question");
+const User= require("../models/User");
 const del = require("del");
 const logger = require("../utils/logger");
 const process = require ("process");
@@ -310,5 +311,27 @@ router.get('/:id/testcase',authenticateUser,async(req,res)=>{
         });
     }
 });
-
+router.get('/:id/whosolved',async (req,res)=>{
+    try{
+        const question = await Question.findOne({
+            _id:req.params.id
+        });
+        let goodBoys=[]
+        const allUsers= await User.find();
+        for(let user in allUsers){
+            const didSolved = user.codes.find(obj=> String(obj.forQuestion)==String(req.params.id));
+            if(didSolved){
+                goodBoys.push({
+                    studentNumber:user.studentNumber,
+                    penalty: didSolved.date - question.forDate
+                });
+            }
+        }
+        res.status(200).send(goodBoys);
+    }catch(err){
+        res.status(500).send({
+            error:"wtf"
+        });
+    }
+});
 module.exports=router;
