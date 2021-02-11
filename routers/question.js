@@ -131,6 +131,13 @@ router.patch("/:id", authenticateAdmin, patchHandler.fields(fieldstoUpload), asy
                 question[fieldToUpdate]=req.body[fieldToUpdate];
             }
         }
+        if (req.files.testGenerator[0]) {
+            question.testGeneratorPath = req.files.testGenerator[0].path;
+          }
+        
+        if (req.files.answer[0]) {
+            question.answerPath = req.files.answer[0].path;
+        }
     await question.save()
     logger.info("question updated successfully");
     res.status(200).send({
