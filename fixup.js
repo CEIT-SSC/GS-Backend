@@ -25,10 +25,10 @@ async function fixTheShit(){
     const answerPath = question.answerPath;
     for (let user of users){
         let studentNumber=user.studentNumber;
-        forChiz(user.studentNumber,testGeneratorPath,answerPath,questionId);
+        forChiz(user.studentNumber,testGeneratorPath,answerPath,questionId,user);
     }
 }
-async function forChiz(studentNumber,testGeneratorPath,answerPath,questionId){
+async function forChiz(studentNumber,testGeneratorPath,answerPath,questionId,user){
     console.log("working on" +studentNumber)
     const isSubmitted = user.codes.find(code=>String(code.forQuestion)==questionId);
     if(!isSubmitted){
