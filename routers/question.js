@@ -318,7 +318,7 @@ router.get('/:id/whosolved',async (req,res)=>{
         });
         let goodBoys=[]
         const allUsers= await User.find();
-        for(let user in allUsers){
+        for(let user of allUsers){
             const didSolved = user.codes.find(obj=> String(obj.forQuestion)==String(req.params.id));
             if(didSolved){
                 goodBoys.push({
@@ -330,7 +330,7 @@ router.get('/:id/whosolved',async (req,res)=>{
         res.status(200).send(goodBoys);
     }catch(err){
         res.status(500).send({
-            error:"wtf"
+            error:err.message
         });
     }
 });
