@@ -1,14 +1,16 @@
 #!/bin/bash
 
 if [ $# -ne 1 ]; then
-    echo "Invalid argument; usage: $0 {relative_solution_file_address}"
+    echo "Invalid argument; usage: $0 {problem_id}"
     exit 1
 fi
 SOLUTION_ADDRESS=$1
-read -d '' INPUT 
+INPUT=$(< /dev/stdin)
+
 file=$(ls $SOLUTION_ADDRESS)
 FILEDIR=${SOLUTION_ADDRESS%/*}
-FILENAME=${FILEDIR%.*}
+base=${SOLUTION_ADDRESS##*/}
+FILENAME=${base%.*}
 
 if [[ $file == *.py  ]]; then
     echo -e "$INPUT" | python3 "$SOLUTION_ADDRESS"
@@ -25,5 +27,7 @@ elif [[ $file == *.java ]]; then
 #    fi
 
     echo -e "$INPUT" | java -cp "$FILEDIR" "$FILENAME"
+elif [[ $file == *.sh ]]; then
+    /bin/bash -c "$SOLUTION_ADDRESS $INPUT"
 fi
 
