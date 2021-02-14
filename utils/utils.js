@@ -5,7 +5,7 @@ const logger = require ('./logger');
 const fs = require ("fs");
 async function getTestCase(scriptPath, studentNumber){
 
-    const script= await spawnSync(`sh`,['./scripts/testcase.sh',scriptPath,studentNumber]);
+    const script= await spawnSync(`sh`,['./scripts/testcase.sh','./'+scriptPath,studentNumber]);
     if(!script.status){
         return script.stdout.toString().trim();
     }else{
