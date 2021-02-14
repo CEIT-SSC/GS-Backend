@@ -28,6 +28,6 @@ elif [[ $file == *.java ]]; then
 
     echo -e "$INPUT" | java -cp "$FILEDIR" "$FILENAME"
 elif [[ $file == *.sh ]]; then
-    /bin/bash -c "$SOLUTION_ADDRESS $INPUT"
+    echo -e "$INPUT" | $SOLUTION_ADDRESS
 fi
 
