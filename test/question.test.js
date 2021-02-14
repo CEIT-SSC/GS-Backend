@@ -90,24 +90,24 @@ describe("Question Test" , ()=>{
             });
     });
     
-    it("Patching specific question /question/{id} PATCH",(done)=>{
-        chai.request(app)
-            .patch(`/question/${questionId}`)
-            .set('Authorization',`Bearer ${authToken}`)
-            .set('content-type', 'multipart/form-data')
-            .field('name','newDummy')
-            .field('body','new Dummy body')
-            .attach('testGenerator',fs.readFileSync('./test/dummyFiles/testGen2.cpp'))
-            .end((err,res)=>{
-                if(err) done(err);
-                res.should.have.status(200);
-                res.body.should.be.a('object');
-                res.body.should.have.property('message').equal("successfully updated");
-                res.body.updatedQuestion.should.have.property('name').equal('newDummy');
-                res.body.updatedQuestion.should.have.property('body').equal('new Dummy body');
-                done();
-            });
-    });
+    //it("Patching specific question /question/{id} PATCH",(done)=>{
+    //    chai.request(app)
+//.patch(`/question/${questionId}`)
+    //        .set('Authorization',`Bearer ${authToken}`)
+     //       .set('content-type', 'multipart/form-data')
+     //       .field('name','newDummy')
+      //      .field('body','new Dummy body')
+     //       .attach('testGenerator',fs.readFileSync('./test/dummyFiles/testGen2.cpp'))
+      //      .end((err,res)=>{
+     //           if(err) done(err);
+       //         res.should.have.status(200);
+      //          res.body.should.be.a('object');
+      //          res.body.should.have.property('message').equal("successfully updated");
+      //          res.body.updatedQuestion.should.have.property('name').equal('newDummy');
+      //          res.body.updatedQuestion.should.have.property('body').equal('new Dummy body');
+      //          done();
+   //  //       });
+    //});
     it('Deleting specific question /question/{id}',(done)=>{
         chai.request(app)
             .del(`/question/${questionId}`)
