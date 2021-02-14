@@ -131,11 +131,11 @@ router.patch("/:id", authenticateAdmin, patchHandler.fields(fieldstoUpload), asy
                 question[fieldToUpdate]=req.body[fieldToUpdate];
             }
         }
-        if (req.files.testGenerator[0]) {
+        if (req.files.testGenerator) {
             question.testGeneratorPath = req.files.testGenerator[0].path;
           }
         
-        if (req.files.answer[0]) {
+        if (req.files.answer) {
             question.answerPath = req.files.answer[0].path;
         }
     await question.save()
